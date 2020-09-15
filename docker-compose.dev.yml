@@ -1,0 +1,21 @@
+version: '2'
+services:
+  redis:
+    image: redis
+    volumes:
+      - redis_data:/var/lib/redis
+    hostname: redis
+    ports:
+      - 6379:6379
+  mongo:
+    image: mongo
+    volumes:
+      - mongo_data:/var/lib/mongo
+    hostname: mongo
+    ports:
+      - 27017:27017
+volumes:
+  mongo_data:
+    driver: local
+  redis_data:
+    driver: local

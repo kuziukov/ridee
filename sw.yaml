@@ -1,0 +1,72 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: WLUSM
+  description: API для сервиса по скачиванию альбомов из ВК.
+schemes:
+  - http
+  - https
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+consumes:
+  - application/json
+host: localhost:5000
+basePath: /v1.0
+paths:
+  '/authorization/code':
+    post:
+      tags:
+        - authorization
+      summary: Запрос на регистрацию пользователя
+      produces:
+        - application/json
+      operationId: register_user
+      parameters:
+        - name: json
+          in: body
+          description: Данные пользователя для регистрации
+          required: true
+          schema:
+            type: object
+            required:
+              - code
+            properties:
+              code:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/response'
+definitions:
+  response:
+    type: object
+    properties:
+      status:
+        type: string
+      code:
+        type: number
+      result:
+        type: object
+parameters:
+  lang:
+    name: lang
+    in: query
+    type: string
+    description: >
+      Language:
+       * `en` - english
+       * `ru` - russian
+  start:
+    name: start
+    in: query
+    type: integer
+    default: 0
+  limit:
+    name: limit
+    in: query
+    type: integer
+    default: 50

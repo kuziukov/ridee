@@ -1,3 +1,4 @@
 aiohttp===3.6.2
 envparse===0.2.0
 aiohttp_cors===0.7.0
+marshmallow===3.7.1
