@@ -1,2 +1,4 @@
 from .authorization.authorization_sms import AuthorizationSmsPost
+from .authorization.authorization_sms_copmlete import AuthorizationSmsCompletePost
+
 
