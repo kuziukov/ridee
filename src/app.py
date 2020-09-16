@@ -5,7 +5,8 @@ from config import (
 )
 from cores.rest_core.resource import format_errors
 from extentions import (
-    init_cors
+    init_cors,
+    init_redis,
 )
 from api import init_routes_app_v1
 
@@ -14,6 +15,7 @@ async def create_app(loop):
     app = web.Application(debug=DEBUG)
     app.middlewares.append(format_errors)
     init_cors(app)
+    await init_redis(app, loop)
     init_routes_app_v1(app)
     return app
 

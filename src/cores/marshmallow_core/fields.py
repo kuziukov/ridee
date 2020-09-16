@@ -1,4 +1,5 @@
 import re
+import phonenumbers
 from datetime import timezone, datetime
 from marshmallow import fields, ValidationError
 
@@ -105,3 +106,18 @@ class Password(BaseField, fields.Str):
         raise ValidationError('Password must contain as many as 8 characters including letter and numeric '
                                       'characters')
 
+
+class PhoneNumber(BaseField, fields.Str):
+
+    def _deserialize(self, value, attr, data, **kwargs):
+        value = super()._deserialize(value, attr, data, **kwargs)
+
+        try:
+            phone_number = phonenumbers.parse(value, None, _check_region=True)
+        except Exception as e:
+            raise ValidationError('Invalid phone number')
+
+        if phonenumbers.is_valid_number(phone_number):
+            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
+
+        raise ValidationError('Invalid phone number')
