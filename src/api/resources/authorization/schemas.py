@@ -22,5 +22,5 @@ class DeserializationNumberCompleteSchema(ApiSchema):
 
 class SerializationNumberCompleteSchema(ApiSchema):
 
-    verify_key = fields.Str(default=None)
-    expires_in = fields.Int(default=60)
+    access_token = fields.Str(default=None)
+    expires_in = fields.Timestamp(default=None)

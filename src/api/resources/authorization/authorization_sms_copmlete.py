@@ -3,6 +3,8 @@ from api.resources.authorization.schemas import (
     DeserializationNumberCompleteSchema
 )
 from api.service.session.authorization import AuthorizationSession
+from api.service.session.jwt import Token
+from api.service.session.session import Session, create_session
 from cores.rest_core import codes, APIException
 
 
@@ -25,6 +27,16 @@ async def AuthorizationSmsCompletePost(request):
         if (result['verify_key'] == data['verify_key']) and \
                 (result['sms_code'] == data['sms_code']):
             await session.destroy()
+
+            expires_in = 2629744
+            users = {'id': '12345'}
+            #session = create_session(users=users, expires_in=expires_in, app=request.app)
+            access_token, expires_in = Token(session_id=users['id'], user_id=users['id']).generate(expires_in)
+
+            result = {
+                'access_token': access_token,
+                'expires_in': expires_in
+            }
             return SerializationNumberCompleteSchema().serialize(result)
 
     raise CommunityException()
