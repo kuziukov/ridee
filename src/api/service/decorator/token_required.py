@@ -50,7 +50,7 @@ def login_required(func):
         if user is None:
             raise ApiKeyException()
         elif 'blocked' not in user:
-            raise ProfileInformationException()
+            raise BlockingException()
         elif user['blocked'] is True:
             raise BlockingException()
 
