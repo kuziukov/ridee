@@ -18,15 +18,6 @@ class ApiKeyException(APIException):
     code = codes.BAD_REQUEST
 
 
-class ProfileInformationException(APIException):
-
-    @property
-    def message(self):
-        return 'Your name or surname is not filled. Please fill the information before.'
-
-    code = codes.BAD_REQUEST
-
-
 class BlockingException(APIException):
 
     @property
