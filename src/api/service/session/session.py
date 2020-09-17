@@ -38,14 +38,13 @@ class Session(object):
         return self._key.decode('utf-8') if isinstance(self._key, bytes) else self._key
 
 
-def create_session(users, expires_in, app) -> Session:
+async def create_session(users, expires_in, app) -> Session:
     session_id = generate_uuid1()
     session = Session(session_id, app)
     expires_in = 500 if expires_in == 0 else expires_in
     session.data = {
-        'access_token': users.access_token,
         'expires_in': expires_in,
-        'user_id': users.user_id
+        'user_id': str(users['_id'])
     }
-    session.save(expires_in=expires_in)
+    await session.save(expires_in=expires_in)
     return session

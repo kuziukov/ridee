@@ -8,7 +8,7 @@ class Token(object):
     _alg = 'HS256'
 
     def __init__(self, session_id, user_id):
-        self._session_id = session_id
+        self._session_id = str(session_id)
         self._user_id = user_id
         self._exp = None
 

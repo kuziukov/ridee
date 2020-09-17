@@ -1,14 +1,18 @@
+import phonenumbers
+from phonenumbers import region_code_for_country_code
+from pymongo.errors import DuplicateKeyError
+
 from api.resources.authorization.schemas import (
     SerializationNumberCompleteSchema,
     DeserializationNumberCompleteSchema
 )
 from api.service.session.authorization import AuthorizationSession
 from api.service.session.jwt import Token
-from api.service.session.session import Session, create_session
+from api.service.session.session import create_session
 from cores.rest_core import codes, APIException
 
 
-class CommunityException(APIException):
+class AuthorizationCompleteException(APIException):
 
     @property
     def message(self):
@@ -28,10 +32,26 @@ async def AuthorizationSmsCompletePost(request):
                 (result['sms_code'] == data['sms_code']):
             await session.destroy()
 
+            phone_number = phonenumbers.parse(data['number'], None, _check_region=True)
+            region_code = region_code_for_country_code(phone_number.country_code)
+
+            user = await request.app.db.users.find_one({'phone': data['number']})
+            if user is None:
+
+                user = {
+                    'phone': data['number'],
+                    'region_code': region_code,
+                    'blocked': False,
+                }
+
+                try:
+                    user = await request.app.db.users.insert_one(user)
+                except DuplicateKeyError:
+                    raise AuthorizationCompleteException()
+
             expires_in = 2629744
-            users = {'id': '12345'}
-            #session = create_session(users=users, expires_in=expires_in, app=request.app)
-            access_token, expires_in = Token(session_id=users['id'], user_id=users['id']).generate(expires_in)
+            session = await create_session(users=user, expires_in=expires_in, app=request.app)
+            access_token, expires_in = Token(session_id=session.key, user_id=user['_id']).generate(expires_in)
 
             result = {
                 'access_token': access_token,
@@ -39,5 +59,5 @@ async def AuthorizationSmsCompletePost(request):
             }
             return SerializationNumberCompleteSchema().serialize(result)
 
-    raise CommunityException()
+    raise AuthorizationCompleteException()
 
