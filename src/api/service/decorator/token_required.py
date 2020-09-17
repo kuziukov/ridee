@@ -27,7 +27,7 @@ class BlockingException(APIException):
     code = codes.BAD_REQUEST
 
 
-def login_required(func):
+def token_required(func):
     async def wrapped(request):
         request.user = None
 
