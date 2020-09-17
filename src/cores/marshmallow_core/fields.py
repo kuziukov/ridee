@@ -1,5 +1,6 @@
 import re
 import phonenumbers
+from bson import ObjectId
 from datetime import timezone, datetime
 from marshmallow import fields, ValidationError
 
@@ -50,6 +51,24 @@ class Bool(BaseField, fields.Bool):
 
 class Str(BaseField, fields.Str):
     pass
+
+
+class ObjectID(BaseField, fields.Field):
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        if value is None:
+            return value
+        return str(value)
+
+    def _deserialize(self, value, attr, data, **kwargs):
+        if value is None:
+            return value
+        if isinstance(value, ObjectId):
+            return value
+        try:
+            return ObjectId(value)
+        except InvalidId:
+            raise ValidationError('Invalid object id')
 
 
 class Timestamp(BaseField, fields.Field):
