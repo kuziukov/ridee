@@ -1,4 +1,14 @@
 from .env import (
-    DEBUG
+    DEBUG,
+    REDIS_URI,
+    MONGO_URI,
+    MONGO_DBNAME,
 )
+
+TMP_STORE_URI = f'{REDIS_URI}/1'
+SESSION_STORE_URI = f'{REDIS_URI}/0'
+
+
+SECRET_KEY = '0bde8eef5dc532bc3d88e6c2caf5d3cb27b7d591d0cbb5941d7676a2798369a969cf8a6'
+
 
