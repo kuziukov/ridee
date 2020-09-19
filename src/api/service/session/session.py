@@ -1,11 +1,11 @@
 import json
-
+from config import KEYEXPIRES
 from utils import generate_uuid1
 
 
 class Session(object):
 
-    def __init__(self, key, app):
+    def __init__(self, app, key):
         self._key = key
         self.data = None
         self._session_store = app.session
@@ -38,13 +38,16 @@ class Session(object):
         return self._key.decode('utf-8') if isinstance(self._key, bytes) else self._key
 
 
-async def create_session(users, expires_in, app) -> Session:
-    session_id = generate_uuid1()
-    session = Session(session_id, app)
-    expires_in = 500 if expires_in == 0 else expires_in
-    session.data = {
-        'expires_in': expires_in,
-        'user_id': str(users['_id'])
-    }
-    await session.save(expires_in=expires_in)
-    return session
+class UserSession(object):
+    def __init__(self, app):
+        self._app = app
+
+    async def create_session(self, user, expires_in=KEYEXPIRES):
+        session_id = generate_uuid1()
+        session = Session(self._app, session_id)
+        session.data = {
+            'expires_in': expires_in,
+            'user_id': str(user['_id'])
+        }
+        await session.save(expires_in=expires_in)
+        return session

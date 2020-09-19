@@ -1,8 +1,9 @@
 import jwt
 import json
-import config
 from bson import ObjectId
 from aiohttp import web
+
+from api.service.session.jwt import JWTToken
 from cores.rest_core import (
     codes,
     APIException
@@ -39,12 +40,10 @@ class BlockingException(APIException):
 def login_required(func):
     async def wrapped(request):
         request.user = None
-
         jwt_token = request.headers.get('Token', None)
-        if jwt_token is None:
-            raise web.HTTPUnauthorized()
+
         try:
-            payload = jwt.decode(jwt_token, config.SECRET_KEY, algorithms=['HS256'])
+            payload = JWTToken().parse(jwt_token)
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             raise ApiKeyException()
 

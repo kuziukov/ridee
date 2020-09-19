@@ -1,15 +1,17 @@
 import phonenumbers
 from phonenumbers import region_code_for_country_code
 from pymongo.errors import DuplicateKeyError
-
 from api.resources.authorization.schemas import (
     SerializationNumberCompleteSchema,
     DeserializationNumberCompleteSchema
 )
 from api.service.session.authorization import AuthorizationSession
-from api.service.session.jwt import Token
-from api.service.session.session import create_session
-from cores.rest_core import codes, APIException
+from api.service.session.jwt import JWTToken
+from api.service.session.session import UserSession
+from cores.rest_core import (
+    codes,
+    APIException
+)
 
 
 class AuthorizationCompleteException(APIException):
@@ -49,10 +51,8 @@ async def AuthorizationSmsCompletePost(request):
                 except DuplicateKeyError:
                     raise AuthorizationCompleteException()
 
-            expires_in = 2629744
-            session = await create_session(users=user, expires_in=expires_in, app=request.app)
-            access_token, expires_in = Token(session_id=session.key, user_id=user['_id']).generate(expires_in)
-
+            session = await UserSession(request.app).create_session(user)
+            access_token, expires_in = JWTToken().generate(session)
             result = {
                 'access_token': access_token,
                 'expires_in': expires_in
