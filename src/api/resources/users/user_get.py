@@ -1,7 +1,7 @@
 from api.resources.users.schemas import SerializationSchema
-from api.service.decorator import token_required
+from api.service.decorator import login_required
 
 
-@token_required
+@login_required(skip_info=True)
 async def UserGet(request):
     return SerializationSchema().serialize(request.user)

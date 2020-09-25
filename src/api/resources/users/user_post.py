@@ -1,7 +1,7 @@
 from bson import ObjectId
 from pymongo import ReturnDocument
 from cores.rest_core import APIException, codes
-from api.service.decorator import token_required
+from api.service.decorator import login_required
 from cores.marshmallow_core import ApiSchema, fields
 from api.resources.users.schemas import SerializationSchema
 
@@ -21,7 +21,7 @@ class ProfileException(APIException):
     code = codes.BAD_REQUEST
 
 
-@token_required
+@login_required(skip_info=True)
 async def UserPost(request):
 
     user = request.user

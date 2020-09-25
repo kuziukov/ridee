@@ -1,7 +1,6 @@
 import jwt
 import json
 from bson import ObjectId
-from aiohttp import web
 
 from api.service.session.jwt import JWTToken
 from cores.rest_core import (
@@ -37,33 +36,40 @@ class BlockingException(APIException):
     code = codes.BAD_REQUEST
 
 
-def login_required(func):
-    async def wrapped(request):
-        request.user = None
-        jwt_token = request.headers.get('Token', None)
+def login_required(skip_info=False):
+    def wrapped(func):
+        async def wrapped_f(request):
+            request.user = None
+            jwt_token = request.headers.get('Token', None)
 
-        try:
-            payload = JWTToken().parse(jwt_token)
-        except (jwt.DecodeError, jwt.ExpiredSignatureError):
-            raise ApiKeyException()
+            try:
+                payload = JWTToken().parse(jwt_token)
+            except (jwt.DecodeError, jwt.ExpiredSignatureError):
+                raise ApiKeyException()
 
-        data = json.loads(await request.app.session.get(payload['id']))
+            try:
+                data = json.loads(await request.app.session.get(payload['id']))
+            except Exception:
+                raise ApiKeyException()
 
-        if data is None:
-            raise ApiKeyException()
-        elif payload['user_id'] != data['user_id']:
-            raise ApiKeyException()
+            if data is None:
+                raise ApiKeyException()
+            elif payload['user_id'] != data['user_id']:
+                raise ApiKeyException()
 
-        user = await request.app.db.users.find_one({'_id': ObjectId(data['user_id'])})
-        if user is None:
-            raise ApiKeyException()
-        elif 'name' not in user or 'surname' not in user or 'blocked' not in user:
-            raise ProfileInformationException()
-        elif user['blocked'] is True:
-            raise BlockingException()
-        elif user['name'] is None or user['surname'] is None:
-            raise ProfileInformationException()
+            user = await request.app.db.users.find_one({'_id': ObjectId(data['user_id'])})
+            if user is None:
+                raise ApiKeyException()
+            elif 'blocked' not in user:
+                raise BlockingException()
+            elif user['blocked'] is True:
+                raise BlockingException()
+            elif not skip_info and ('name' not in user or 'surname' not in user):
+                raise ProfileInformationException()
+            elif not skip_info and (user['name'] is None or user['surname'] is None):
+                raise ProfileInformationException()
 
-        request.user = user
-        return await func(request)
+            request.user = user
+            return await func(request)
+        return wrapped_f
     return wrapped
