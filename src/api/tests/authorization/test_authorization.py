@@ -1,9 +1,11 @@
 import json
-
 from aiohttp.test_utils import unittest_run_loop
-
 from api.service.session.authorization import AuthorizationSession
 from api.tests import AppTestCase
+from utils import (
+    generate_uuid1,
+    generate_sms_code
+)
 
 
 class AuthorizationTestCase(AppTestCase):
@@ -26,26 +28,20 @@ class AuthorizationTestCase(AppTestCase):
     @unittest_run_loop
     async def test_authorization_complete_post(self):
         number = '+12345678900'
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        data = {
-            'number': number
-        }
-        response = await self.client.post("/v1.0/authorization/sms", data=json.dumps(data), headers=headers)
-        data = await response.json()
-        result = data['result']
-        verify_key = result['verify_key']
-
         session = AuthorizationSession(number, app=self.app)
-        result, expires_in = await session.get_data()
-        sms_code = result['sms_code']
+        verify_key = generate_uuid1()
+        sms_code = generate_sms_code()
+        session.data = {
+            "verify_key": verify_key,
+            "sms_code": sms_code
+        }
+        await session.save()
 
         response = await self.client.post("/v1.0/authorization/sms/complete", data=json.dumps({
             'number': number,
             'verify_key': verify_key,
             'sms_code': sms_code,
-        }), headers=headers)
+        }))
         data = await response.json()
         assert data['code'] == 200
         assert data['status'] == 'success'

@@ -1,8 +1,6 @@
-import json
-
 from aiohttp.test_utils import unittest_run_loop
-
-from api.service.session.authorization import AuthorizationSession
+from api.service.session.jwt import JWTToken
+from api.service.session.session import UserSession
 from api.tests import AppTestCase
 
 
@@ -10,31 +8,20 @@ class UserTestCase(AppTestCase):
     @unittest_run_loop
     async def test_user_get(self):
         number = '+12345678900'
+        user = {
+            'phone': number,
+            'region_code': 'RU',
+            'blocked': False,
+        }
+        response = await self.app.db.users.insert_one(user)
+        user['_id'] = response.inserted_id
+        session = await UserSession(self.app).create_session(user)
+        access_token, expires_in = JWTToken().generate(session)
+
         headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Token': access_token.decode("utf-8"),
         }
-        data = {
-            'number': number
-        }
-        response = await self.client.post("/v1.0/authorization/sms", data=json.dumps(data), headers=headers)
-        data = await response.json()
-        result = data['result']
-        verify_key = result['verify_key']
-
-        session = AuthorizationSession(number, app=self.app)
-        result, expires_in = await session.get_data()
-        sms_code = result['sms_code']
-
-        response = await self.client.post("/v1.0/authorization/sms/complete", data=json.dumps({
-            'number': number,
-            'verify_key': verify_key,
-            'sms_code': sms_code,
-        }), headers=headers)
-        data = await response.json()
-        result = data['result']
-        access_token = result['access_token']
-
-        headers['Token'] = access_token
         response = await self.client.get("/v1.0/user", headers=headers)
         data = await response.json()
         assert data['code'] == 200
@@ -43,5 +30,4 @@ class UserTestCase(AppTestCase):
         assert isinstance(result['phone'], str)
         assert isinstance(result['_id'], str)
         assert isinstance(result['region_code'], str)
-
 
