@@ -47,7 +47,8 @@ async def AuthorizationSmsCompletePost(request):
                 }
 
                 try:
-                    user = await request.app.db.users.insert_one(user)
+                    response = await request.app.db.users.insert_one(user)
+                    user['_id'] = response.inserted_id
                 except DuplicateKeyError:
                     raise AuthorizationCompleteException()
 

@@ -1,4 +1,3 @@
-import logging
 from aiohttp import (
     web
 )
@@ -9,8 +8,6 @@ from . import (
     codes,
     APIException
 )
-
-logging.basicConfig(level=logging.DEBUG)
 
 
 @web.middleware
@@ -25,7 +22,7 @@ async def format_errors(request, handler):
         code = e.code
         data = {'error': e.__class__.__name__, 'message': e.message,}
     except Exception as e:
-        logging.debug(e)
+        print(e)
         code = codes.INTERNAL_SERVER_ERROR
         data = {'error': 'InternalServerError', 'message': 'Internal Server Error.', }
     return web.json_response(

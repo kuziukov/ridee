@@ -1,5 +1,7 @@
 from aiohttp import web
 import asyncio
+
+from config import Config
 from cores.rest_core.resource import format_errors
 from extentions import (
     init_cors,
@@ -9,17 +11,18 @@ from extentions import (
 from api import init_routes_app_v1
 
 
-async def create_app(loop):
+async def create_app(config):
     app = web.Application()
+    app.config = config
     app.middlewares.append(format_errors)
     init_cors(app)
-    await init_redis(app, loop)
-    init_mongo(app)
+    await init_redis(app)
+    await init_mongo(app)
     init_routes_app_v1(app)
     return app
 
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    app = loop.run_until_complete(create_app(loop))
+    app = loop.run_until_complete(create_app(Config))
     web.run_app(app, port=5000)

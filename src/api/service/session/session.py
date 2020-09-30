@@ -1,5 +1,5 @@
 import json
-from config import KEYEXPIRES
+from config import Config
 from utils import generate_uuid1
 
 
@@ -42,7 +42,7 @@ class UserSession(object):
     def __init__(self, app):
         self._app = app
 
-    async def create_session(self, user, expires_in=KEYEXPIRES):
+    async def create_session(self, user, expires_in=Config.KEYEXPIRES):
         session_id = generate_uuid1()
         session = Session(self._app, session_id)
         session.data = {

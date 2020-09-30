@@ -7,6 +7,7 @@ from cores.rest_core import (
     codes,
     APIException
 )
+from models.users import Users
 
 
 class ApiKeyException(APIException):
@@ -57,7 +58,7 @@ def login_required(skip_info=False):
             elif payload['user_id'] != data['user_id']:
                 raise ApiKeyException()
 
-            user = await request.app.db.users.find_one({'_id': ObjectId(data['user_id'])})
+            user = await Users.get_user_by_id(data['user_id'])
             if user is None:
                 raise ApiKeyException()
             elif 'blocked' not in user:
