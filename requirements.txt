@@ -9,3 +9,4 @@ PyMongo===3.11.0
 pytest-aiohttp===0.3.0
 umongo===2.3.0
 motor===2.2.0
+gunicorn===20.0.4
