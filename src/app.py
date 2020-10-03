@@ -11,7 +11,7 @@ from extentions import (
 from api import init_routes_app_v1
 
 
-async def create_app(config):
+async def create_app(config=Config):
     app = web.Application()
     app.config = config
     app.middlewares.append(format_errors)
