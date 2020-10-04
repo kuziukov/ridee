@@ -1,12 +1,12 @@
 from aiohttp import web
 import asyncio
-
 from config import Config
 from cores.rest_core.resource import format_errors
 from extentions import (
     init_cors,
     init_redis,
-    init_mongo
+    init_mongo,
+    init_timber,
 )
 from api import init_routes_app_v1
 
@@ -19,6 +19,7 @@ async def create_app(config=Config):
     await init_redis(app)
     await init_mongo(app)
     init_routes_app_v1(app)
+    init_timber(app)
     return app
 
 

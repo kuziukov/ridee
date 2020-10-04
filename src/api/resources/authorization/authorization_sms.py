@@ -21,7 +21,7 @@ async def AuthorizationSmsPost(request):
         "verify_key": verify_key,
         "sms_code": sms_code
     }
-    print(sms_code)
+    request.app.logger.info(f'{data["number"]} - {sms_code}')
     await session.save()
     return SerializationNumberSchema().serialize(session.data)
 
