@@ -12,6 +12,10 @@ def websocket_required(func):
         if not await session.is_exists():
             raise aiohttp.web.HTTPUnauthorized()
 
-        print("connected")
+        data, expires_in = await session.get_data()
+        topic = data['user_id']
+        await session.destroy()
+
+        request.topic = topic
         return await func(request)
     return wrapped

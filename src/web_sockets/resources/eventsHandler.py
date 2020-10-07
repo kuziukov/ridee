@@ -9,8 +9,11 @@ from web_sockets.services.decorator import (
 @websocket_required
 async def eventsHandler(request):
     app = request.app
+    topic = request.topic
+    print(topic)
 
     ws = WebSocketResponse()
     await ws.prepare(request)
+
 
     return ws
