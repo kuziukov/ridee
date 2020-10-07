@@ -6,8 +6,9 @@ class Config:
     MONGO_DBNAME = env.str('MONGO_DBNAME', default='ridee')
     REDIS_URI = env.str('REDIS_URI', default='redis://127.0.0.1:6379')
     DEBUG = env.str('DEBUG')
-    TMP_STORE_URI = f'{REDIS_URI}/1'
     SESSION_STORE_URI = f'{REDIS_URI}/0'
+    TMP_STORE_URI = f'{REDIS_URI}/1'
+    EVENTS_STORE_URI = f'{REDIS_URI}/2'
     SECRET_KEY = '0bde8eef5dc532bc3d88e6c2caf5d3cb27b7d591d0cbb5941d7676a2798369a969cf8a6'
     KEYEXPIRES = 2629744
     TIMBER_ID = "43133"
