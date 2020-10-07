@@ -1,7 +1,7 @@
 from aiohttp import web
 import asyncio
 from config import Config
-from cores.rest_core.resource import format_errors
+from cores.rest_core.resource import response
 from extentions import (
     init_cors,
     init_redis,
@@ -19,7 +19,7 @@ async def create_app(config=Config):
     app.config = config
     app['sockets'] = {}
     app['tasks'] = {}
-    app.middlewares.append(format_errors)
+    app.middlewares.append(response)
     init_cors(app)
     await init_redis(app)
     await init_mongo(app)
