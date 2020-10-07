@@ -9,6 +9,9 @@ from extentions import (
     init_timber,
 )
 from api import init_routes_app_v1
+from web_sockets import (
+    init_websocket_routes
+)
 
 
 async def create_app(config=Config):
@@ -19,6 +22,7 @@ async def create_app(config=Config):
     await init_redis(app)
     await init_mongo(app)
     init_routes_app_v1(app)
+    init_websocket_routes(app)
     init_timber(app)
     return app
 
