@@ -17,6 +17,8 @@ from web_sockets import (
 async def create_app(config=Config):
     app = web.Application()
     app.config = config
+    app['sockets'] = {}
+    app['tasks'] = {}
     app.middlewares.append(format_errors)
     init_cors(app)
     await init_redis(app)
