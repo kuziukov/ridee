@@ -11,7 +11,7 @@ from . import (
 
 
 @web.middleware
-async def format_errors(request, handler):
+async def response(request, handler):
     try:
         data = await handler(request)
         code = codes.OK
