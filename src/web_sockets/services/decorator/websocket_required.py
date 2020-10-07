@@ -8,6 +8,8 @@ def websocket_required(func):
         if not isinstance(token, str) and not token:
             raise aiohttp.web.HTTPUnauthorized()
 
+        session = WSSession(request.app, token)
+
         print("connected")
 
 
