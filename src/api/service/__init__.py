@@ -4,4 +4,5 @@ from .session.authorization import (
 from .session.session import (
     Session
 )
+from .modules.event_publisher import EventPublisher
 
