@@ -1,7 +1,7 @@
 from web_sockets.resources import (
-    eventsHandler
+    EventsHandler
 )
 
 
 def init_websocket_routes(app):
-    app.router.add_route('GET', '/{code}', eventsHandler)
+    app.router.add_route('GET', '/{code}', EventsHandler)

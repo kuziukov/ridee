@@ -11,7 +11,7 @@ from web_sockets.services import (
 
 
 @websocket_required
-async def eventsHandler(request):
+async def EventsHandler(request):
     app = request.app
     topic = request.topic
     events = app.events
@@ -33,6 +33,4 @@ async def eventsHandler(request):
             app['sockets'].pop(topic)
             task = app['tasks'].pop(topic)
             task.cancel()
-
-
     return ws
