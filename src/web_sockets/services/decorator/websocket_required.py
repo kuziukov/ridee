@@ -9,9 +9,9 @@ def websocket_required(func):
             raise aiohttp.web.HTTPUnauthorized()
 
         session = WSSession(request.app, token)
+        if not await session.is_exists():
+            raise aiohttp.web.HTTPUnauthorized()
 
         print("connected")
-
-
         return await func(request)
     return wrapped
