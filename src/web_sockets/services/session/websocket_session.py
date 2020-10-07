@@ -1,5 +1,8 @@
 import json
 
+from config import Config
+from utils import generate_uuid1
+
 
 class WSSession(object):
 
@@ -34,3 +37,17 @@ class WSSession(object):
     def key(self):
         return self._key.decode('utf-8') if isinstance(self._key, bytes) else self._key
 
+
+class EventSession(object):
+    def __init__(self, app):
+        self._app = app
+
+    async def create_session(self, user, expires_in=Config.WSKEYEXPIRES) -> WSSession:
+        session_id = generate_uuid1()
+        session = WSSession(self._app, session_id)
+        session.data = {
+            'expires_in': expires_in,
+            'user_id': str(user['_id'])
+        }
+        await session.save(expires_in=expires_in)
+        return session

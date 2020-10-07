@@ -1,1 +1,4 @@
-from .session.websocket_session import WSSession
+from .session.websocket_session import (
+    WSSession,
+    EventSession
+)
