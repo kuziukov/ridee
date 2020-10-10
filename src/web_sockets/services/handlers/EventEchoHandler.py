@@ -14,7 +14,12 @@ class EventEchoHandler(object):
                 try:
                     message = await channel.get_json()
                     for i in self._ws:
-                        await i.send_json(message)
+                        await i.send_json(
+                            {
+                                'type': 'Type',
+                                'result': message
+                            }
+                        )
                 except Exception:
                     pass
 

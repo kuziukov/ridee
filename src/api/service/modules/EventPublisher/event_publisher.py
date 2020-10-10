@@ -7,4 +7,8 @@ class EventPublisher(object):
         self._store = app.events
 
     async def publish(self, topic: str, data: dict):
-        await self._store.publish(str(topic), json.dumps(data, cls=JSONEncoder))
+        response = {
+            'type': None,
+            'data': json.dumps(data, cls=JSONEncoder)
+        }
+        await self._store.publish(str(topic), response)
