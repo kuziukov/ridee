@@ -70,3 +70,8 @@ class ChatMethods(object):
             'chats': [document async for document in chats]
         }
         return result
+
+    @staticmethod
+    async def get_chat_by_id(chat_id: str):
+        chat = await instance.db.chats.find_one({'_id': ObjectId(chat_id)})
+        return chat
