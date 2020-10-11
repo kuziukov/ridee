@@ -12,3 +12,6 @@ class EventPublisher(object):
             'data': json.dumps(data, cls=JSONEncoder)
         }
         await self._store.publish(str(topic), response)
+
+
+## await EventPublisher(request.app).publish(request.user['_id'], SerializationSchema().serialize(request.user))

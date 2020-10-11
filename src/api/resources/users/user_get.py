@@ -5,6 +5,4 @@ from api.service.decorator import login_required
 
 @login_required(skip_info=True)
 async def UserGet(request):
-    await EventPublisher(request.app).publish(request.user['_id'], SerializationSchema().serialize(request.user))
-
     return SerializationSchema().serialize(request.user)
