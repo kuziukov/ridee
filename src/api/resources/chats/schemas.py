@@ -26,3 +26,7 @@ class SerializationChatsSchema(ApiSchema):
 
     chats = fields.List(fields.Nested(ChatSchema))
 
+
+class DeserializationSchema(ApiSchema):
+
+    chat_id = fields.Str(required=True)
