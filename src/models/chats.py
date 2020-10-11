@@ -23,9 +23,6 @@ class Chat:
     trip_id: ObjectId = None
     created_at: datetime = datetime.utcnow()
 
-    def to_json(self):
-        return json.dumps(self.__dict__, default=lambda x: x.__dict__, indent=4)
-
     def to_short_dict(self):
         result = asdict(self)
         return result
