@@ -1,7 +1,13 @@
 from api.service.decorator import login_required
-from api.resources.chats.schemas import FullChatSchema, DeserializationSchema
+from api.resources.chats.schemas import (
+    FullChatSchema,
+    DeserializationSchema,
+)
 from api.service.modules import ChatMethods
-from cores.rest_core import APIException, codes
+from cores.rest_core import (
+    APIException,
+    codes,
+)
 
 
 class ChatException(APIException):
