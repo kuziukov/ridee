@@ -80,6 +80,6 @@ class ChatMethods(object):
                     '$elemMatch': {
                         'user_id': ObjectId(user_id)
                     }
-                }
+                },
             })
         return chat

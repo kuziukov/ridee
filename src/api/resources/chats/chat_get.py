@@ -1,7 +1,6 @@
 from api.service.decorator import login_required
 from api.resources.chats.schemas import (
     FullChatSchema,
-    DeserializationSchema,
 )
 from api.service.modules import ChatMethods
 from cores.rest_core import (
@@ -22,10 +21,11 @@ class ChatException(APIException):
 @login_required(skip_info=True)
 async def ChatGet(request):
     user = request.user
-    data = DeserializationSchema().deserialize(request.rel_url.query)
+    chat_id = request.match_info.get('chat_id', None)
     try:
-        chat = await ChatMethods.get_chat_by_id(data['chat_id'], user['_id'])
+        chat = await ChatMethods.get_chat_by_id(chat_id, user['_id'])
     except Exception as e:
+        print(e)
         raise ChatException()
     return FullChatSchema().serialize(chat)
 

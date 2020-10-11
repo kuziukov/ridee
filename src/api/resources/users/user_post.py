@@ -3,7 +3,7 @@ from pymongo import ReturnDocument
 from cores.rest_core import APIException, codes
 from api.service.decorator import login_required
 from cores.marshmallow_core import ApiSchema, fields
-from api.resources.users.schemas import SerializationSchema
+from api.resources.users.schemas import UserSchema
 
 
 class DeserializationSchema(ApiSchema):
@@ -32,4 +32,4 @@ async def UserPost(request):
                                                         return_document=ReturnDocument.AFTER)
     except Exception as e:
         raise ProfileException()
-    return SerializationSchema().serialize(result)
+    return UserSchema().serialize(result)
