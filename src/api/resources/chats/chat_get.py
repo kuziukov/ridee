@@ -15,9 +15,10 @@ class ChatException(APIException):
 
 @login_required(skip_info=True)
 async def ChatGet(request):
+    user = request.user
     data = DeserializationSchema().deserialize(request.rel_url.query)
     try:
-        chat = await ChatMethods.get_chat_by_id(data['chat_id'])
+        chat = await ChatMethods.get_chat_by_id(data['chat_id'], user['_id'])
     except Exception as e:
         raise ChatException()
     return FullChatSchema().serialize(chat)

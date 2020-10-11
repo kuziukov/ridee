@@ -72,6 +72,14 @@ class ChatMethods(object):
         return result
 
     @staticmethod
-    async def get_chat_by_id(chat_id: str):
-        chat = await instance.db.chats.find_one({'_id': ObjectId(chat_id)})
+    async def get_chat_by_id(chat_id: str, user_id: str):
+        chat = await instance.db.chats.find_one(
+            {
+                '_id': ObjectId(chat_id),
+                'members': {
+                    '$elemMatch': {
+                        'user_id': ObjectId(user_id)
+                    }
+                }
+            })
         return chat
