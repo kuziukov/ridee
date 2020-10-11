@@ -1,5 +1,4 @@
 from api.resources.users.schemas import SerializationSchema
-from api.service import EventPublisher
 from api.service.decorator import login_required
 
 
