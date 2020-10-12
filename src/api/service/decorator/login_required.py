@@ -58,16 +58,12 @@ def login_required(skip_info=False):
             elif payload['user_id'] != data['user_id']:
                 raise ApiKeyException()
 
-            user = await Users.get_user_by_id(data['user_id'])
+            user = await Users.find_one({'_id': ObjectId(data['user_id'])})
             if user is None:
                 raise ApiKeyException()
-            elif 'blocked' not in user:
+            elif user.blocked is True:
                 raise BlockingException()
-            elif user['blocked'] is True:
-                raise BlockingException()
-            elif not skip_info and ('name' not in user or 'surname' not in user):
-                raise ProfileInformationException()
-            elif not skip_info and (user['name'] is None or user['surname'] is None):
+            elif not skip_info and (user.name is None or user.surname is None):
                 raise ProfileInformationException()
 
             request.user = user

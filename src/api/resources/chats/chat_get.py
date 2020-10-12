@@ -1,12 +1,11 @@
+from bson import ObjectId
+
 from api.service.decorator import login_required
-from api.resources.chats.schemas import (
-    FullChatSchema,
-)
-from api.service.modules import ChatMethods
 from cores.rest_core import (
     APIException,
     codes,
 )
+from models import Chats
 
 
 class ChatException(APIException):
@@ -22,12 +21,8 @@ class ChatException(APIException):
 async def ChatGet(request):
     user = request.user
     chat_id = request.match_info.get('chat_id', None)
-    try:
-        chat = await ChatMethods.get_chat_by_id(chat_id, user['_id'])
-    except Exception as e:
-        print(e)
-        raise ChatException()
-    return FullChatSchema().serialize(chat)
+    chat = await Chats.find_one({'_id': ObjectId(chat_id)})
+    return ChatSchema().serialize(chat)
 
 
 

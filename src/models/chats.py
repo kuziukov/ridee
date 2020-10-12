@@ -1,31 +1,15 @@
-from dataclasses import (
-    dataclass,
-    field,
-    asdict,
-)
 from datetime import datetime
-from bson import ObjectId
+from umongo import Document, fields
+from extentions.mongo import instance
 
 
-@dataclass
-class Member:
-    user_id: ObjectId = None
-    created_at: datetime = datetime.utcnow()
+@instance.register
+class Chats(Document):
+    _id = fields.ObjectIdField()
+    name = fields.StringField(required=True)
+    members = fields.ListField(fields.ReferenceField("Users"))
+    user = fields.ReferenceField("Users")
+    created_at = fields.DateTimeField(default=datetime.utcnow())
 
-    def to_short_dict(self):
-        result = asdict(self)
-        return result
-
-
-@dataclass
-class Chat:
-    _id: str = None
-    name: str = None
-    members: list = field(default_factory=list)
-    user_id: ObjectId = None
-    trip_id: ObjectId = None
-    created_at: datetime = datetime.utcnow()
-
-    def to_short_dict(self):
-        result = asdict(self)
-        return result
+    class Meta:
+        collection_name = "chats"

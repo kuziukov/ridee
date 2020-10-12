@@ -1,8 +1,12 @@
-from bson import ObjectId
-from pymongo import ReturnDocument
-from cores.rest_core import APIException, codes
+from cores.rest_core import (
+    APIException,
+    codes
+)
 from api.service.decorator import login_required
-from cores.marshmallow_core import ApiSchema, fields
+from cores.marshmallow_core import (
+    ApiSchema,
+    fields
+)
 from api.resources.users.schemas import UserSchema
 
 
@@ -26,10 +30,14 @@ async def UserPost(request):
 
     user = request.user
     data = DeserializationSchema().deserialize(await request.json())
+
+    if 'name' in data:
+        user.name = data['name']
+    if 'surname' in data:
+        user.surname = data['surname']
+
     try:
-        result = await request.app.db.users.find_one_and_update({'_id': ObjectId(user['_id'])},
-                                                       {'$set': {'name': data['name'], 'surname': data['surname']}},
-                                                        return_document=ReturnDocument.AFTER)
+        await user.commit()
     except Exception as e:
         raise ProfileException()
-    return UserSchema().serialize(result)
+    return UserSchema().serialize(user)

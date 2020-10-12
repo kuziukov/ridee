@@ -1,24 +1,18 @@
-from bson import ObjectId
-from typing import Dict
-from cores.rest_core import APIException, codes
 from extentions.mongo import instance
+from umongo import (
+    Document,
+    fields,
+)
 
 
-class UserNotFoundException(APIException):
+@instance.register
+class Users(Document):
+    _id = fields.ObjectIdField()
+    name = fields.StringField()
+    surname = fields.StringField()
+    phone = fields.StringField(required=True)
+    region_code = fields.StringField(required=True)
+    blocked = fields.BooleanField(default=False)
 
-    @property
-    def message(self):
-        return 'User have not found, please check your data.'
-
-    code = codes.BAD_REQUEST
-
-
-class Users(object):
-
-    @staticmethod
-    async def get_user_by_id(user_id) -> Dict:
-        user = await instance.db.users.find_one({'_id': ObjectId(user_id)})
-        if not user:
-            raise UserNotFoundException()
-        return user
-
+    class Meta:
+        collection_name = "users"
