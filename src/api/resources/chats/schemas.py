@@ -7,11 +7,18 @@ class ChatSchema(ApiSchema):
 
     _id = fields.ObjectID()
     name = fields.Str()
-    user_id = fields.ObjectID()
+    user = fields.Nested(UserSchema, default=None)
     members = fields.List(fields.Nested(UserSchema))
+    created_at = fields.Timestamp()
+
+
+class ChatsSchema(ApiSchema):
+
+    _id = fields.ObjectID()
+    name = fields.Str()
     created_at = fields.Timestamp()
 
 
 class SerializationChatsSchema(ApiSchema):
 
-    chats = fields.List(fields.Nested(ChatSchema))
+    chats = fields.List(fields.Nested(ChatsSchema))

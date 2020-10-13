@@ -1,3 +1,5 @@
+from bson import ObjectId
+
 from api.service.decorator import login_required
 from api.resources.chats.schemas import SerializationChatsSchema
 from api.service.modules import ChatMethods
@@ -5,6 +7,7 @@ from cores.rest_core import (
     APIException,
     codes,
 )
+from models import Chats
 
 
 class ChatsException(APIException):
@@ -19,10 +22,13 @@ class ChatsException(APIException):
 @login_required(skip_info=True)
 async def ChatsGet(request):
     try:
-        chats = await ChatMethods.get_all_chats_by_id(request.user['_id'])
+        chats = Chats.find({'members.': ObjectId(request.user['_id'])})
+        result = {
+            'chats': [document async for document in chats]
+        }
     except Exception as e:
         raise ChatsException()
-    return SerializationChatsSchema().serialize(chats)
+    return SerializationChatsSchema().serialize(result)
 
 
 
