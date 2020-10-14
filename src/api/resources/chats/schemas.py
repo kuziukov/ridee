@@ -19,6 +19,7 @@ class ChatsSchema(ApiSchema):
     _id = fields.ObjectID()
     name = fields.Str()
     created_at = fields.Timestamp()
+    last_message = fields.Nested(MessageSchema, default=None)
 
 
 class SerializationChatsSchema(ApiSchema):

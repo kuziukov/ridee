@@ -1,12 +1,15 @@
+import pymongo
 from bson import ObjectId
-
 from api.service.decorator import login_required
 from api.resources.chats.schemas import SerializationChatsSchema
 from cores.rest_core import (
     APIException,
     codes,
 )
-from models import Chats
+from models import (
+    Chats,
+    Messages
+)
 
 
 class ChatsException(APIException):
@@ -20,14 +23,22 @@ class ChatsException(APIException):
 
 @login_required(skip_info=True)
 async def ChatsGet(request):
+    user = request.user
+    response = {'chats': []}
     try:
         chats = Chats.find({'members.': ObjectId(request.user['_id'])})
-        result = {
-            'chats': [document async for document in chats]
-        }
+        async for chat in chats:
+            last_message = Messages.find({
+                'chat': chat._id,
+                'user': ObjectId(user['_id'])
+            }).sort([('created_at', pymongo.DESCENDING)])
+            last_message = await last_message.to_list(1)
+            setattr(Chats, 'last_message', last_message[0])
+            response['chats'].append(chat)
     except Exception as e:
+        print(e)
         raise ChatsException()
-    return SerializationChatsSchema().serialize(result)
+    return SerializationChatsSchema().serialize(response)
 
 
 
