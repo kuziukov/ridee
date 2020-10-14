@@ -2,7 +2,7 @@ from cores.marshmallow_core import fields
 from cores.marshmallow_core.schema import ApiSchema
 
 
-class SerializationSchema(ApiSchema):
+class UserSchema(ApiSchema):
 
     _id = fields.ObjectID(default=None)
     name = fields.Str()
