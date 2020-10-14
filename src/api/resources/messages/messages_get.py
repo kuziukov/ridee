@@ -35,12 +35,18 @@ class NoAccessException(APIException):
 async def MessagesGet(request):
     user = request.user
     chat_id = request.match_info.get('chat_id', None)
+
     try:
-        count = 200 if int(request.rel_url.query.get('count', 20)) >= 200 else int(request.rel_url.query.get('count', 20))
+        count = 200 if int(request.rel_url.query.get('count', 20)) >= 200 else int(
+            request.rel_url.query.get('count', 20))
+        offset = int(request.rel_url.query.get('offset', 0))
     except Exception as e:
         raise ParametersException()
 
-    chat = None
+    start_message_id = request.rel_url.query.get('start_message_id', None)
+    if start_message_id:
+        start_message_id = ObjectId(start_message_id)
+
     try:
         chat = await Chats.find_one({'_id': ObjectId(chat_id), 'members.': user._id})
     except Exception as e:
@@ -49,9 +55,11 @@ async def MessagesGet(request):
     if not chat:
         raise NoAccessException()
 
-    messages = Messages.find({
-        'chat': chat._id
-    }).sort([('created_at', pymongo.DESCENDING)])
+    query_kwargs = {'chat': chat._id}
+    if start_message_id:
+        query_kwargs['_id'] = {'$lte': start_message_id}
+
+    messages = Messages.find(query_kwargs).sort([('created_at', pymongo.DESCENDING)]).skip(offset)
     messages = await messages.to_list(count)
 
     return ShortMessageSchema().serialize({
