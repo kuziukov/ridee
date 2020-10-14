@@ -33,8 +33,12 @@ async def ChatsGet(request):
                 'user': ObjectId(user['_id'])
             }).sort([('created_at', pymongo.DESCENDING)])
             last_message = await last_message.to_list(1)
-            setattr(Chats, 'last_message', last_message[0])
-            response['chats'].append(chat)
+            response['chats'].append({
+                '_id': chat._id,
+                'name': chat.name,
+                'created_at': chat.created_at,
+                'last_message': last_message[0] if last_message else None
+            })
     except Exception as e:
         print(e)
         raise ChatsException()

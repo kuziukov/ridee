@@ -36,7 +36,7 @@ async def ChatGet(request):
         'user': await chat.user.fetch(),
         'members': [await user.fetch() for user in chat.members],
         'created_at': chat.created_at,
-        'last_message': last_message[0]
+        'last_message': last_message[0] if last_message else None
     })
 
 
