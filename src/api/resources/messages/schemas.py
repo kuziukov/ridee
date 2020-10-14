@@ -1,4 +1,3 @@
-from api.resources.users.schemas import UserSchema
 from cores.marshmallow_core import fields
 from cores.marshmallow_core.schema import ApiSchema
 
@@ -18,4 +17,4 @@ class MessageSchema(ApiSchema):
 
 class ShortMessageSchema(ApiSchema):
 
-    _id = fields.ObjectID(default=None)
+    messages = fields.List(fields.Nested(MessageSchema))

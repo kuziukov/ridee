@@ -29,8 +29,7 @@ async def ChatsGet(request):
         chats = Chats.find({'members.': ObjectId(request.user['_id'])})
         async for chat in chats:
             last_message = Messages.find({
-                'chat': chat._id,
-                'user': ObjectId(user['_id'])
+                'chat': chat._id
             }).sort([('created_at', pymongo.DESCENDING)])
             last_message = await last_message.to_list(1)
             response['chats'].append({
