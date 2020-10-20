@@ -1,7 +1,8 @@
 import pymongo
 from bson import ObjectId
 from api.resources.messages.schemas import (
-    ShortMessageSchema
+    ShortMessageSchema,
+    DeserializationMessageGetSchema
 )
 from api.service.decorator import login_required
 from cores.rest_core import (
@@ -10,7 +11,8 @@ from cores.rest_core import (
 )
 from models import (
     Messages,
-    Chats)
+    Chats
+)
 
 
 class ParametersException(APIException):
@@ -35,32 +37,30 @@ class NoAccessException(APIException):
 async def MessagesGet(request):
     user = request.user
     chat_id = request.match_info.get('chat_id', None)
-
-    try:
-        count = 200 if int(request.rel_url.query.get('count', 20)) >= 200 else int(
-            request.rel_url.query.get('count', 20))
-        offset = int(request.rel_url.query.get('offset', 0))
-    except Exception as e:
-        raise ParametersException()
-
-    start_message_id = request.rel_url.query.get('start_message_id', None)
-    if start_message_id:
-        start_message_id = ObjectId(start_message_id)
+    data = DeserializationMessageGetSchema().deserialize(request.rel_url.query)
 
     try:
         chat = await Chats.find_one({'_id': ObjectId(chat_id), 'members.': user._id})
     except Exception as e:
         raise NoAccessException()
-
     if not chat:
         raise NoAccessException()
 
     query_kwargs = {'chat': chat._id}
-    if start_message_id:
-        query_kwargs['_id'] = {'$lte': start_message_id}
+    if 'start_message_id' in data:
+        try:
+            start_message = await Messages.find_one({'_id': ObjectId(data['start_message_id']), 'chat': chat._id})
+        except Exception as e:
+            raise NoAccessException()
+        if not start_message:
+            raise ParametersException()
+        query_kwargs['created_at'] = {'$lte': start_message.created_at}
 
-    messages = Messages.find(query_kwargs).sort([('created_at', pymongo.DESCENDING)]).skip(offset)
-    messages = await messages.to_list(count)
+    try:
+        messages = Messages.find(query_kwargs).sort([('created_at', pymongo.DESCENDING)]).skip(data['offset'])
+        messages = await messages.to_list(data['count'])
+    except Exception as e:
+        raise ParametersException()
 
     return ShortMessageSchema().serialize({
         'messages': messages

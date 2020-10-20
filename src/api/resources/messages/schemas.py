@@ -8,6 +8,13 @@ class DeserializationSchema(ApiSchema):
     message = fields.Str(required=True)
 
 
+class DeserializationMessageGetSchema(ApiSchema):
+
+    start_message_id = fields.ObjectID(required=False)
+    count = fields.Int(missing=20)
+    offset = fields.Int(missing=0)
+
+
 class MessageSchema(ApiSchema):
 
     _id = fields.ObjectID(default=None)
