@@ -6,6 +6,7 @@ class DeserializationSchema(ApiSchema):
 
     chat_id = fields.ObjectID(required=True)
     message = fields.Str(required=True)
+    random_id = fields.Str(required=True)
 
 
 class DeserializationMessageGetSchema(ApiSchema):
