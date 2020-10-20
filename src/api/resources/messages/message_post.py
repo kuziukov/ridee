@@ -36,7 +36,6 @@ async def MessagePost(request):
     try:
         await message.commit()
     except Exception as e:
-        print(e)
         raise MessageException()
     return ShortMessageSchema().serialize(message)
 
