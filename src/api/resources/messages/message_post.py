@@ -31,12 +31,11 @@ async def MessagePost(request):
     message.user = user
     message.chat = ObjectId(data['chat_id'])
     message.message = data['message']
-    message.random_id = "12345"
+    message.random_id = data['random_id']
 
     try:
         await message.commit()
     except Exception as e:
-        print(e)
         raise MessageException()
     return ShortMessageSchema().serialize(message)
 

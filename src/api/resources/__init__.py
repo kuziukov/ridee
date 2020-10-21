@@ -6,3 +6,4 @@ from .stream.stream_get import StreamGet
 from .chats.chats_get import ChatsGet
 from .chats.chat_get import ChatGet
 from .messages.message_post import MessagePost
+from .messages.messages_get import MessagesGet

@@ -22,11 +22,10 @@ class ChatException(APIException):
 async def ChatGet(request):
     user = request.user
     chat_id = request.match_info.get('chat_id', None)
-    chat = await Chats.find_one({'_id': ObjectId(chat_id)})
+    chat = await Chats.find_one({'_id': ObjectId(chat_id), 'members.': ObjectId(request.user['_id'])})
 
     last_message = Messages.find({
-        'chat': chat._id,
-        'user': ObjectId(user['_id'])
+        'chat': chat._id
     })
     last_message.sort([('created_at', pymongo.DESCENDING)])
     last_message = await last_message.to_list(1)
