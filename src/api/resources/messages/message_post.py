@@ -1,15 +1,17 @@
 from bson import ObjectId
 from api.resources.messages.schemas import (
     DeserializationSchema,
-    ShortMessageSchema
+    MessageSchema
 )
+from api.service import EventPublisher
 from api.service.decorator import login_required
 from cores.rest_core import (
     APIException,
     codes
 )
 from models import (
-    Messages
+    Messages,
+    Chats
 )
 
 
@@ -34,9 +36,24 @@ async def MessagePost(request):
     message.random_id = data['random_id']
 
     try:
+        pass
         await message.commit()
     except Exception as e:
         raise MessageException()
-    return ShortMessageSchema().serialize(message)
+
+    try:
+        subscribers = await Chats.find_one({'_id': ObjectId(data['chat_id'])})
+    except Exception as e:
+        print(e)
+        pass
+
+    for member in subscribers.members:
+        try:
+            await EventPublisher(request.app).publish(member.pk, MessageSchema().serialize(message))
+        except Exception as e:
+            print(e)
+            pass
+
+    return MessageSchema().serialize(message)
 
 
