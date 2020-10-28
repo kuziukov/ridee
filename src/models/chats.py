@@ -17,3 +17,14 @@ class Chats(Document):
 
     class Meta:
         collection_name = "chats"
+
+    async def list_members(self):
+        return [await self.user.fetch() for user in self.members]
+
+    async def get_user(self):
+        return await self.user.fetch()
+
+    @staticmethod
+    async def is_user_in_chat(chat_id, user_id):
+        chat = await Chats.find_one({'_id': chat_id, 'members.': user_id})
+        return True if chat else False

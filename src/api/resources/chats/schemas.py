@@ -14,6 +14,12 @@ class ChatSchema(ApiSchema):
     last_message = fields.Nested(MessageSchema, default=None)
 
 
+class MinimalChatSchema(ApiSchema):
+    _id = fields.ObjectID()
+    name = fields.Str()
+    created_at = fields.Timestamp()
+
+
 class ChatsSchema(ApiSchema):
 
     _id = fields.ObjectID()

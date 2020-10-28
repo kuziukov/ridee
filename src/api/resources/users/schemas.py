@@ -8,4 +8,4 @@ class UserSchema(ApiSchema):
     name = fields.Str()
     surname = fields.Str()
     region_code = fields.Str(default=None)
-    phone = fields.PhoneNumber(default=None)
+    phone = fields.PhoneNumber(default=None, load_only=True)

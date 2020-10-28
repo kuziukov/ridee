@@ -1,3 +1,4 @@
+from api.resources.users.schemas import UserSchema
 from cores.marshmallow_core import fields
 from cores.marshmallow_core.schema import ApiSchema
 
@@ -19,10 +20,21 @@ class DeserializationMessageGetSchema(ApiSchema):
 class MessageSchema(ApiSchema):
 
     _id = fields.ObjectID(default=None)
+    user = fields.Nested(UserSchema, default=None)
+    chat = fields.Nested('MinimalChatSchema', default=None)
     message = fields.Str(default=None)
     created_at = fields.Timestamp()
 
 
-class ShortMessageSchema(ApiSchema):
+class MinimalMessageSchema(ApiSchema):
 
-    messages = fields.List(fields.Nested(MessageSchema))
+    _id = fields.ObjectID(default=None)
+    user = fields.Nested(UserSchema, default=None)
+    message = fields.Str(default=None)
+    created_at = fields.Timestamp()
+
+
+class ListMessageSchema(ApiSchema):
+
+    messages = fields.List(fields.Nested(MinimalMessageSchema))
+    count = fields.Int()

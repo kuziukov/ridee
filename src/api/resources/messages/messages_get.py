@@ -1,7 +1,6 @@
-import pymongo
 from bson import ObjectId
 from api.resources.messages.schemas import (
-    ShortMessageSchema,
+    ListMessageSchema,
     DeserializationMessageGetSchema
 )
 from api.service.decorator import login_required
@@ -39,29 +38,24 @@ async def MessagesGet(request):
     chat_id = request.match_info.get('chat_id', None)
     data = DeserializationMessageGetSchema().deserialize(request.rel_url.query)
 
-    try:
-        chat = await Chats.find_one({'_id': ObjectId(chat_id), 'members.': user._id})
-    except Exception as e:
-        raise NoAccessException()
-    if not chat:
+    if not await Chats.is_user_in_chat(ObjectId(chat_id), user._id):
         raise NoAccessException()
 
-    query_kwargs = {'chat': chat._id}
+    query_kwargs = {'chat': ObjectId(chat_id)}
     if 'start_message_id' in data:
         try:
-            start_message = await Messages.find_one({'_id': ObjectId(data['start_message_id']), 'chat': chat._id})
+            start_message = await Messages.find_one({'_id': ObjectId(data['start_message_id']), 'chat': ObjectId(chat_id)})
         except Exception as e:
             raise NoAccessException()
-        if not start_message:
-            raise ParametersException()
-        query_kwargs['created_at'] = {'$lte': start_message.created_at}
+        if start_message:
+            query_kwargs['created_at'] = {'$lte': start_message.created_at}
 
     try:
-        messages = Messages.find(query_kwargs).sort([('created_at', pymongo.DESCENDING)]).skip(data['offset'])
-        messages = await messages.to_list(data['count'])
+        messages = await Messages.range_messages(query_kwargs, data['count'], data['offset'])
     except Exception as e:
         raise ParametersException()
 
-    return ShortMessageSchema().serialize({
-        'messages': messages
+    return ListMessageSchema().serialize({
+        'messages': messages,
+        'count': len(messages)
     })

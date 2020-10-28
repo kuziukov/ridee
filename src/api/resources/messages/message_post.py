@@ -49,7 +49,7 @@ async def MessagePost(request):
 
     for member in subscribers.members:
         try:
-            await EventPublisher(request.app).publish(member.pk, MessageSchema().serialize(message))
+            await EventPublisher(request.app).publish(topic=member.pk, sys_type='ChatMessage', data=message)
         except Exception as e:
             print(e)
             pass
