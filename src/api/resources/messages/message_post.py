@@ -34,26 +34,27 @@ async def MessagePost(request):
     message.chat = ObjectId(data['chat_id'])
     message.message = data['message']
     message.random_id = data['random_id']
-
     try:
-        pass
         await message.commit()
     except Exception as e:
         raise MessageException()
 
-    try:
-        subscribers = await Chats.find_one({'_id': ObjectId(data['chat_id'])})
-    except Exception as e:
-        print(e)
-        pass
+    response = {
+        '_id': message._id,
+        'user': await message.user.fetch(),
+        'chat': await message.chat.fetch(),
+        'message': message.message,
+        'created_at': message.created_at
+    }
 
+    subscribers = await Chats.find_one({'_id': ObjectId(data['chat_id'])})
     for member in subscribers.members:
         try:
-            await EventPublisher(request.app).publish(topic=member.pk, sys_type='ChatMessage', data=message)
+            await EventPublisher(request.app).publish(topic=member.pk, sys_type='message', data=response)
         except Exception as e:
             print(e)
             pass
 
-    return MessageSchema().serialize(message)
+    return MessageSchema().serialize(response)
 
 

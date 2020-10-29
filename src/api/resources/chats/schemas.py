@@ -31,3 +31,4 @@ class ChatsSchema(ApiSchema):
 class SerializationChatsSchema(ApiSchema):
 
     chats = fields.List(fields.Nested(ChatsSchema))
+    count = fields.Int()

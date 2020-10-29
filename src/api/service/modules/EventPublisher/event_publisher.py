@@ -5,7 +5,7 @@ from .json_encoder import JSONEncoder
 
 class EventMethods:
     @staticmethod
-    def ChatMessage(data):
+    def message(data):
         response = MessageSchema().serialize(data)
         return response
 
@@ -18,7 +18,7 @@ class EventPublisher(object):
     async def publish(self, topic: str,
                       sys_type: str,
                       data):
-        response = None
+        response = {}
         self._methods = getattr(EventMethods, sys_type, None)
         if callable(self._methods):
             response = self._methods(data)
