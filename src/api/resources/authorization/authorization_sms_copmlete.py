@@ -12,6 +12,9 @@ from cores.rest_core import (
     codes,
     APIException
 )
+from utils import (
+    coordinates_from_region_code
+)
 
 
 class AuthorizationCompleteException(APIException):
@@ -39,11 +42,15 @@ async def AuthorizationSmsCompletePost(request):
 
             user = await request.app.db.users.find_one({'phone': data['number']})
             if user is None:
-
+                lat, long = coordinates_from_region_code(region_code)
                 user = {
                     'phone': data['number'],
                     'region_code': region_code,
                     'blocked': False,
+                    'last_coord': {
+                        'lat': lat,
+                        'long': long
+                    }
                 }
 
                 try:
@@ -61,4 +68,5 @@ async def AuthorizationSmsCompletePost(request):
             return SerializationNumberCompleteSchema().serialize(result)
 
     raise AuthorizationCompleteException()
+
 

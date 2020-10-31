@@ -36,6 +36,10 @@ class Dict(BaseField, fields.Dict):
     pass
 
 
+class Float(BaseField, fields.Float):
+    pass
+
+
 class Nested(BaseField, fields.Nested):
     pass
 
