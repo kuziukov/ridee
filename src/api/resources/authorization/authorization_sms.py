@@ -3,7 +3,10 @@ from api.resources.authorization.schemas import (
     SerializationNumberSchema
 )
 from api.service.session.authorization import AuthorizationSession
-from utils import generate_uuid1, generate_sms_code
+from utils import (
+    generate_uuid1,
+    generate_sms_code
+)
 
 
 async def AuthorizationSmsPost(request):
