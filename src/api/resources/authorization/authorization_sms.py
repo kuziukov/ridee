@@ -3,10 +3,20 @@ from api.resources.authorization.schemas import (
     SerializationNumberSchema
 )
 from api.service.session.authorization import AuthorizationSession
+from cores.rest_core import APIException, codes
 from utils import (
     generate_uuid1,
     generate_sms_code
 )
+
+
+class CountyException(APIException):
+
+    @property
+    def message(self):
+        return 'The service is not available in your country.'
+
+    code = codes.BAD_REQUEST
 
 
 async def AuthorizationSmsPost(request):
