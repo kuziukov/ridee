@@ -24,7 +24,25 @@ class AuthorizationCompleteException(APIException):
 
     @property
     def message(self):
-        return 'The authorization is not completed, please check the data'
+        return 'Authentication time has expired. Please start again from the launcher.'
+
+    code = codes.BAD_REQUEST
+
+
+class AuthorizationExpiredException(APIException):
+
+    @property
+    def message(self):
+        return 'Authentication time has expired. Please start again from the launcher.'
+
+    code = codes.BAD_REQUEST
+
+
+class SMSCodeException(APIException):
+
+    @property
+    def message(self):
+        return 'SMS Verification Code is Invalid.'
 
     code = codes.BAD_REQUEST
 
@@ -35,11 +53,11 @@ async def AuthorizationSmsCompletePost(request):
     session = AuthorizationSession(data['number'], app=request.app)
 
     if not await session.is_exists():
-        raise AuthorizationCompleteException()
+        raise AuthorizationExpiredException()
 
     result, expires_in = await session.get_data()
     if result['verify_key'] != data['verify_key'] or result['sms_code'] != data['sms_code']:
-        raise AuthorizationCompleteException()
+        raise SMSCodeException()
 
     await session.destroy()
     phone_number = phonenumbers.parse(data['number'], None, _check_region=True)
