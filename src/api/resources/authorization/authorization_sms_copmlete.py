@@ -20,16 +20,7 @@ from utils import (
 )
 
 
-class AuthorizationCompleteException(APIException):
-
-    @property
-    def message(self):
-        return 'Authentication time has expired. Please start again from the launcher.'
-
-    code = codes.BAD_REQUEST
-
-
-class AuthorizationExpiredException(APIException):
+class ExpiredException(APIException):
 
     @property
     def message(self):
@@ -53,7 +44,7 @@ async def AuthorizationSmsCompletePost(request):
     session = AuthorizationSession(data['number'], app=request.app)
 
     if not await session.is_exists():
-        raise AuthorizationExpiredException()
+        raise ExpiredException()
 
     result, expires_in = await session.get_data()
     if result['verify_key'] != data['verify_key'] or result['sms_code'] != data['sms_code']:
@@ -78,12 +69,14 @@ async def AuthorizationSmsCompletePost(request):
         try:
             await user.commit()
         except Exception as e:
-            raise AuthorizationCompleteException()
+            raise ExpiredException()
 
     session = await UserSession(request.app).create_session(user)
-    access_token, expires_in = JWTToken().generate(session)
+    access_token, expires_in = JWTToken().generate_access(session)
+    refresh_token, refresh_expires_in = JWTToken().generate_refresh(session)
     result = {
         'access_token': access_token,
+        'refresh_token': refresh_token,
         'expires_in': expires_in
     }
     return SerializationNumberCompleteSchema().serialize(result)

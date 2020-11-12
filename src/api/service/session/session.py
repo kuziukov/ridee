@@ -33,21 +33,28 @@ class Session(object):
         result = await self._session_store.set(self.key, json.dumps(self.data), expire=expires_in)
         return result
 
+    # returns UserID:SessionID
     @property
     def key(self):
         return self._key.decode('utf-8') if isinstance(self._key, bytes) else self._key
+
+    # returns SessionID
+    @property
+    def session_id(self):
+        return self._key.decode('utf-8').split(":")[1] if isinstance(self._key, bytes) else self._key.split(":")[1]
 
 
 class UserSession(object):
     def __init__(self, app):
         self._app = app
 
-    async def create_session(self, user, expires_in=Config.KEYEXPIRES):
-        session_id = generate_uuid1()
+    async def create_session(self, user, expires_in=Config.KEYEXPIRES*2):
+        session_id = f'{str(user["_id"])}:{generate_uuid1()}'
         session = Session(self._app, session_id)
         session.data = {
             'expires_in': expires_in,
-            'user_id': str(user['_id'])
+            'user_id': str(user['_id']),
+            'refresh_key': generate_uuid1()
         }
         await session.save(expires_in=expires_in)
         return session

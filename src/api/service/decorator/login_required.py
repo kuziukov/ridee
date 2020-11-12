@@ -19,7 +19,16 @@ class ApiKeyException(APIException):
     code = codes.BAD_REQUEST
 
 
-class ProfileInformationException(APIException):
+class WrongTokenException(APIException):
+
+    @property
+    def message(self):
+        return 'Use access key for protected API.'
+
+    code = codes.BAD_REQUEST
+
+
+class InformationException(APIException):
 
     @property
     def message(self):
@@ -49,22 +58,25 @@ def login_required(skip_info=False):
                 raise ApiKeyException()
 
             try:
-                data = json.loads(await request.app.session.get(payload['id']))
+                session_id = f'{str(payload["user_id"])}:{payload["id"]}'
+                data = json.loads(await request.app.session.get(session_id))
             except Exception:
                 raise ApiKeyException()
 
-            if data is None:
+            if not data:
                 raise ApiKeyException()
+            elif 'refresh_key' in payload:
+                raise WrongTokenException()
             elif payload['user_id'] != data['user_id']:
                 raise ApiKeyException()
 
             user = await Users.find_one({'_id': ObjectId(data['user_id'])})
-            if user is None:
+            if not user:
                 raise ApiKeyException()
-            elif user.blocked is True:
+            elif user.blocked:
                 raise BlockingException()
-            elif not skip_info and (user.name is None or user.surname is None):
-                raise ProfileInformationException()
+            elif not skip_info and (not user.name or not user.surname):
+                raise InformationException()
 
             request.user = user
             return await func(request)

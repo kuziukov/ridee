@@ -7,3 +7,7 @@ from .chats.chats_get import ChatsGet
 from .chats.chat_get import ChatGet
 from .messages.message_post import MessagePost
 from .messages.messages_get import MessagesGet
+from .session.sessions_get import SessionsGet
+from .session.sessions_delete import SessionsDelete
+from .session.session_post import SessionPost
+from .session.session_delete import SessionDelete
