@@ -23,4 +23,5 @@ class DeserializationNumberCompleteSchema(ApiSchema):
 class SerializationNumberCompleteSchema(ApiSchema):
 
     access_token = fields.Str(default=None)
+    refresh_token = fields.Str(default=None)
     expires_in = fields.Timestamp(default=None)

@@ -7,7 +7,11 @@ from .resources import (
     ChatsGet,
     ChatGet,
     MessagePost,
-    MessagesGet
+    MessagesGet,
+    SessionsGet,
+    SessionsDelete,
+    SessionPost,
+    SessionDelete
 )
 
 
@@ -21,3 +25,7 @@ def init_routes_app_v1(app):
     app.router.add_get('/v1.0/chats', ChatsGet)
     app.router.add_post('/v1.0/messages', MessagePost)
     app.router.add_get('/v1.0/chat/{chat_id}/messages', MessagesGet)
+    app.router.add_get('/v1.0/sessions', SessionsGet)
+    app.router.add_delete('/v1.0/sessions', SessionsDelete)
+    app.router.add_post('/v1.0/session', SessionPost)
+    app.router.add_delete('/v1.0/session/{session_id}', SessionDelete)
