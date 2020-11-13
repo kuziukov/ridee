@@ -9,7 +9,7 @@ from cores.rest_core import (
 )
 from utils import (
     generate_uuid1,
-    generate_sms_code
+    generate_code
 )
 
 
@@ -31,11 +31,11 @@ async def OAuthSmsPost(request):
         return SerializationNumberSchema().serialize(result)
 
     verify_key = generate_uuid1()
-    sms_code = generate_sms_code()
+    code = generate_code()
     session.data = {
         "verify_key": verify_key,
-        "sms_code": sms_code
+        "code": code
     }
-    request.app.logger.info(f'{data["number"]} - {sms_code}')
+    request.app.logger.info(f'{data["number"]} - {code}')
     await session.save()
     return SerializationNumberSchema().serialize(session.data)

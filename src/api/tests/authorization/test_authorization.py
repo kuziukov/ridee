@@ -4,7 +4,7 @@ from api.service.session.authorization import OAuthSession
 from api.tests import AppTestCase
 from utils import (
     generate_uuid1,
-    generate_sms_code
+    generate_code
 )
 
 
@@ -30,17 +30,17 @@ class AuthorizationTestCase(AppTestCase):
         number = '+12345678900'
         session = OAuthSession(number, app=self.app)
         verify_key = generate_uuid1()
-        sms_code = generate_sms_code()
+        code = generate_code()
         session.data = {
             "verify_key": verify_key,
-            "sms_code": sms_code
+            "code": code
         }
         await session.save()
 
         response = await self.client.post("/v1.0/oauth/sms/complete", data=json.dumps({
             'number': number,
             'verify_key': verify_key,
-            'sms_code': sms_code,
+            'code': code,
         }))
         data = await response.json()
         assert data['code'] == 200

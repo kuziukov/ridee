@@ -46,7 +46,7 @@ async def OAuthCodePost(request):
         raise ExpiredException()
 
     result, expires_in = await session.get_data()
-    if result['verify_key'] != data['verify_key'] or result['sms_code'] != data['sms_code']:
+    if result['verify_key'] != data['verify_key'] or result['code'] != data['code']:
         raise SMSCodeException()
 
     await session.destroy()
