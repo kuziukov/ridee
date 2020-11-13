@@ -1,5 +1,5 @@
 from .session.authorization import (
-    AuthorizationSession
+    OAuthSession
 )
 from .session.session import (
     Session

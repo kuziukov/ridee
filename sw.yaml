@@ -19,7 +19,7 @@ paths:
   '/authorization/code':
     post:
       tags:
-        - authorization
+        - oauth
       summary: Запрос на регистрацию пользователя
       produces:
         - application/json

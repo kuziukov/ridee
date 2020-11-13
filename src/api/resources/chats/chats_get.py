@@ -24,22 +24,16 @@ class ChatsException(APIException):
 async def ChatsGet(request):
     user = request.user
     response = []
-    try:
-        chats = Chats.find({'members.': ObjectId(user['_id'])})
-        async for chat in chats:
-            last_message = await Messages.last_message(chat._id)
-            response.append({
-                '_id': chat._id,
-                'name': chat.name,
-                'created_at': chat.created_at,
-                'last_message': last_message
-            })
-    except Exception as e:
-        raise ChatsException()
+    chats = Chats.find({'members.': ObjectId(user['_id'])})
+    async for chat in chats:
+        last_message = await Messages.last_message(chat._id)
+        response.append({
+            '_id': chat._id,
+            'name': chat.name,
+            'created_at': chat.created_at,
+            'last_message': last_message
+        })
     return SerializationChatsSchema().serialize({
         'chats': response,
         'count': len(response)
     })
-
-
-

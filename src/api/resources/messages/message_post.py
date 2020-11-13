@@ -37,6 +37,7 @@ async def MessagePost(request):
     try:
         await message.commit()
     except Exception as e:
+        request.app.logger.error(e)
         raise MessageException()
 
     response = {
@@ -52,9 +53,7 @@ async def MessagePost(request):
         try:
             await EventPublisher(request.app).publish(topic=member.pk, sys_type='message', data=response)
         except Exception as e:
-            print(e)
+            request.app.logger.error(e)
             pass
 
     return MessageSchema().serialize(response)
-
-

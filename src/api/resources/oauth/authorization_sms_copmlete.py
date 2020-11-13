@@ -1,10 +1,10 @@
 import phonenumbers
 from phonenumbers import region_code_for_country_code
-from api.resources.authorization.schemas import (
+from api.resources.oauth.schemas import (
     SerializationNumberCompleteSchema,
-    DeserializationNumberCompleteSchema
+    DeserializationSMSCompleteSchema
 )
-from api.service import AuthorizationSession
+from api.service import OAuthSession
 from api.service.session import (
     UserSession,
     JWTToken
@@ -38,10 +38,9 @@ class SMSCodeException(APIException):
     code = codes.BAD_REQUEST
 
 
-async def AuthorizationSmsCompletePost(request):
-
-    data = DeserializationNumberCompleteSchema().deserialize(await request.json())
-    session = AuthorizationSession(data['number'], app=request.app)
+async def OAuthSmsCompletePost(request):
+    data = DeserializationSMSCompleteSchema().deserialize(await request.json())
+    session = OAuthSession(data['number'], app=request.app)
 
     if not await session.is_exists():
         raise ExpiredException()
@@ -80,4 +79,3 @@ async def AuthorizationSmsCompletePost(request):
         'expires_in': expires_in
     }
     return SerializationNumberCompleteSchema().serialize(result)
-

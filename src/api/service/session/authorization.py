@@ -1,7 +1,7 @@
 import json
 
 
-class AuthorizationSession(object):
+class OAuthSession(object):
 
     def __init__(self, key, app):
         self._key = key

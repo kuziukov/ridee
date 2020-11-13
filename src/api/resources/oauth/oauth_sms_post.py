@@ -1,9 +1,12 @@
-from api.resources.authorization.schemas import (
+from api.resources.oauth.schemas import (
     DeserializationNumberSchema,
     SerializationNumberSchema
 )
-from api.service.session.authorization import AuthorizationSession
-from cores.rest_core import APIException, codes
+from api.service.session.authorization import OAuthSession
+from cores.rest_core import (
+    APIException,
+    codes
+)
 from utils import (
     generate_uuid1,
     generate_sms_code
@@ -19,10 +22,9 @@ class CountyException(APIException):
     code = codes.BAD_REQUEST
 
 
-async def AuthorizationSmsPost(request):
-
+async def OAuthSmsPost(request):
     data = DeserializationNumberSchema().deserialize(await request.json())
-    session = AuthorizationSession(data['number'], app=request.app)
+    session = OAuthSession(data['number'], app=request.app)
     if await session.is_exists():
         result, expires_in = await session.get_data()
         result["expires_in"] = expires_in
@@ -37,4 +39,3 @@ async def AuthorizationSmsPost(request):
     request.app.logger.info(f'{data["number"]} - {sms_code}')
     await session.save()
     return SerializationNumberSchema().serialize(session.data)
-

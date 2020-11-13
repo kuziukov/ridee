@@ -10,7 +10,7 @@ class DeserializationSchema(ApiSchema):
     random_id = fields.Str(required=True)
 
 
-class DeserializationMessageGetSchema(ApiSchema):
+class DeserializationMessageSchema(ApiSchema):
 
     start_message_id = fields.ObjectID(required=False)
     count = fields.Int(missing=20)
