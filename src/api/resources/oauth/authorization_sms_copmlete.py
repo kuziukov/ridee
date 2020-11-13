@@ -2,7 +2,7 @@ import phonenumbers
 from phonenumbers import region_code_for_country_code
 from api.resources.oauth.schemas import (
     SerializationNumberCompleteSchema,
-    DeserializationSMSCompleteSchema
+    DeserializationCodeSchema
 )
 from api.service import OAuthSession
 from api.service.session import (
@@ -38,8 +38,8 @@ class SMSCodeException(APIException):
     code = codes.BAD_REQUEST
 
 
-async def OAuthSmsCompletePost(request):
-    data = DeserializationSMSCompleteSchema().deserialize(await request.json())
+async def OAuthCodePost(request):
+    data = DeserializationCodeSchema().deserialize(await request.json())
     session = OAuthSession(data['number'], app=request.app)
 
     if not await session.is_exists():

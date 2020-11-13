@@ -1,5 +1,5 @@
 import aiohttp
-from web_sockets.services import WSSession
+from api.service import WSSession
 
 
 def websocket_required(func):

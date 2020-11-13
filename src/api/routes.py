@@ -1,6 +1,6 @@
 from .resources import (
     OAuthSmsPost,
-    OAuthSmsCompletePost,
+    OAuthCodePost,
     UserGet,
     UserPost,
     StreamGet,
@@ -17,7 +17,7 @@ from .resources import (
 
 def init_routes_app_v1(app):
     app.router.add_post('/v1.0/oauth/sms', OAuthSmsPost)
-    app.router.add_post('/v1.0/oauth/sms/complete', OAuthSmsCompletePost)
+    app.router.add_post('/v1.0/oauth/code', OAuthCodePost)
     app.router.add_get('/v1.0/user', UserGet)
     app.router.add_post('/v1.0/user', UserPost)
     app.router.add_get('/v1.0/stream', StreamGet)

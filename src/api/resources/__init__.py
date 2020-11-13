@@ -1,5 +1,5 @@
 from .oauth.oauth_sms_post import OAuthSmsPost
-from .oauth.authorization_sms_copmlete import OAuthSmsCompletePost
+from .oauth.authorization_sms_copmlete import OAuthCodePost
 from .users.user_get import UserGet
 from .users.user_post import UserPost
 from .stream.stream_get import StreamGet
