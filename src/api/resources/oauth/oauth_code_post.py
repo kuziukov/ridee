@@ -1,10 +1,10 @@
 import phonenumbers
 from phonenumbers import region_code_for_country_code
-from api.resources.authorization.schemas import (
+from api.resources.oauth.schemas import (
     SerializationNumberCompleteSchema,
-    DeserializationNumberCompleteSchema
+    DeserializationCodeSchema
 )
-from api.service import AuthorizationSession
+from api.service import OAuthSession
 from api.service.session import (
     UserSession,
     JWTToken
@@ -24,30 +24,36 @@ class ExpiredException(APIException):
 
     @property
     def message(self):
-        return 'Authentication time has expired. Please start again from the launcher.'
+        return 'Authentication time has expired. Please start again from the launcher'
 
-    code = codes.BAD_REQUEST
+    code = codes.AUTHORIZATION_EXPIRED
 
 
 class SMSCodeException(APIException):
 
     @property
     def message(self):
-        return 'SMS Verification Code is Invalid.'
+        return 'SMS Verification Code is Invalid'
 
     code = codes.BAD_REQUEST
 
 
-async def AuthorizationSmsCompletePost(request):
+"""
+    Error exceptions:
+        - 419: Authentication time has expired. Please start again from the launcher
+        - 400: DataError exception
+"""
 
-    data = DeserializationNumberCompleteSchema().deserialize(await request.json())
-    session = AuthorizationSession(data['number'], app=request.app)
+
+async def OAuthCodePost(request):
+    data = DeserializationCodeSchema().deserialize(await request.json())
+    session = OAuthSession(data['number'], app=request.app)
 
     if not await session.is_exists():
         raise ExpiredException()
 
     result, expires_in = await session.get_data()
-    if result['verify_key'] != data['verify_key'] or result['sms_code'] != data['sms_code']:
+    if result['verify_key'] != data['verify_key'] or result['code'] != data['code']:
         raise SMSCodeException()
 
     await session.destroy()
@@ -80,4 +86,3 @@ async def AuthorizationSmsCompletePost(request):
         'expires_in': expires_in
     }
     return SerializationNumberCompleteSchema().serialize(result)
-

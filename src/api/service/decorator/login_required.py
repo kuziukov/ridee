@@ -16,16 +16,7 @@ class ApiKeyException(APIException):
     def message(self):
         return 'API key expired. Please renew the API key.'
 
-    code = codes.BAD_REQUEST
-
-
-class WrongTokenException(APIException):
-
-    @property
-    def message(self):
-        return 'Use access key for protected API.'
-
-    code = codes.BAD_REQUEST
+    code = codes.UNAUTHORIZED
 
 
 class InformationException(APIException):
@@ -34,7 +25,7 @@ class InformationException(APIException):
     def message(self):
         return 'Your name or surname is not filled. Please fill the information before.'
 
-    code = codes.BAD_REQUEST
+    code = codes.FORBIDDEN
 
 
 class BlockingException(APIException):
@@ -43,7 +34,7 @@ class BlockingException(APIException):
     def message(self):
         return 'Your account is blocked!'
 
-    code = codes.BAD_REQUEST
+    code = codes.FORBIDDEN
 
 
 def login_required(skip_info=False):
@@ -66,7 +57,7 @@ def login_required(skip_info=False):
             if not data:
                 raise ApiKeyException()
             elif 'refresh_key' in payload:
-                raise WrongTokenException()
+                raise ApiKeyException()
             elif payload['user_id'] != data['user_id']:
                 raise ApiKeyException()
 

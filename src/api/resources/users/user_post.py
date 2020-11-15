@@ -11,7 +11,6 @@ from api.resources.users.schemas import UserSchema
 
 
 class DeserializationSchema(ApiSchema):
-
     name = fields.Str()
     surname = fields.Str()
 
@@ -27,7 +26,6 @@ class ProfileException(APIException):
 
 @login_required(skip_info=True)
 async def UserPost(request):
-
     user = request.user
     data = DeserializationSchema().deserialize(await request.json())
 
@@ -39,5 +37,6 @@ async def UserPost(request):
     try:
         await user.commit()
     except Exception as e:
+        request.app.logger.error(e)
         raise ProfileException()
     return UserSchema().serialize(user)

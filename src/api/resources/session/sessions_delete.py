@@ -14,4 +14,3 @@ async def SessionsDelete(request):
         'count': len(keys)
     }
     return SessionsSchema().serialize(response)
-

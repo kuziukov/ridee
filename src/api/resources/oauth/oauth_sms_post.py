@@ -1,12 +1,15 @@
-from api.resources.authorization.schemas import (
+from api.resources.oauth.schemas import (
     DeserializationNumberSchema,
     SerializationNumberSchema
 )
-from api.service.session.authorization import AuthorizationSession
-from cores.rest_core import APIException, codes
+from api.service.session.authorization import OAuthSession
+from cores.rest_core import (
+    APIException,
+    codes
+)
 from utils import (
     generate_uuid1,
-    generate_sms_code
+    generate_code
 )
 
 
@@ -16,25 +19,30 @@ class CountyException(APIException):
     def message(self):
         return 'The service is not available in your country.'
 
-    code = codes.BAD_REQUEST
+    code = codes.FORBIDDEN
 
 
-async def AuthorizationSmsPost(request):
+"""
+    Error exceptions:
+        - 403: The service is not available in your country.
+        - 400: DataError exception
+"""
 
+
+async def OAuthSmsPost(request):
     data = DeserializationNumberSchema().deserialize(await request.json())
-    session = AuthorizationSession(data['number'], app=request.app)
+    session = OAuthSession(data['number'], app=request.app)
     if await session.is_exists():
         result, expires_in = await session.get_data()
         result["expires_in"] = expires_in
         return SerializationNumberSchema().serialize(result)
 
     verify_key = generate_uuid1()
-    sms_code = generate_sms_code()
+    code = generate_code()
     session.data = {
         "verify_key": verify_key,
-        "sms_code": sms_code
+        "code": code
     }
-    request.app.logger.info(f'{data["number"]} - {sms_code}')
+    request.app.logger.info(f'{data["number"]} - {code}')
     await session.save()
     return SerializationNumberSchema().serialize(session.data)
-

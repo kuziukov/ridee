@@ -13,11 +13,11 @@ class SerializationNumberSchema(ApiSchema):
     expires_in = fields.Int(default=180)
 
 
-class DeserializationNumberCompleteSchema(ApiSchema):
+class DeserializationCodeSchema(ApiSchema):
 
     number = fields.PhoneNumber(required=True)
     verify_key = fields.Str(required=True)
-    sms_code = fields.Str(required=True)
+    code = fields.Str(required=True)
 
 
 class SerializationNumberCompleteSchema(ApiSchema):

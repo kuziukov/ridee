@@ -1,5 +1,5 @@
 import jwt
-from api.resources.authorization.schemas import (
+from api.resources.oauth.schemas import (
     SerializationNumberCompleteSchema
 )
 from api.resources.session.schemas import DeserializationRefreshSchema
@@ -25,7 +25,6 @@ class RefreshKeyException(APIException):
 
 
 async def SessionPost(request):
-
     data = DeserializationRefreshSchema().deserialize(await request.json())
     try:
         payload = JWTToken().parse(data['refresh_token'])
@@ -34,7 +33,7 @@ async def SessionPost(request):
 
     session_id = f'{payload["user_id"]}:{payload["id"]}'
     session = Session(request.app, session_id)
-    
+
     if not await session.is_exists():
         raise RefreshKeyException()
 
@@ -50,7 +49,7 @@ async def SessionPost(request):
         raise RefreshKeyException()
 
     user = await Users.find_one({'_id': data['user_id']})
-    if user is None:
+    if not user:
         raise RefreshKeyException()
     await session.destroy()
 
@@ -63,4 +62,3 @@ async def SessionPost(request):
         'expires_in': expires_in
     }
     return SerializationNumberCompleteSchema().serialize(result)
-

@@ -23,15 +23,16 @@ async def ChatGet(request):
     chat_id = request.match_info.get('chat_id', None)
     if not chat_id:
         raise ChatException()
-    chat = await Chats.find_one({'_id': ObjectId(chat_id), 'members.': ObjectId(request.user['_id'])})
-    last_message = await Messages.last_message(chat._id)
+
+    chat = await Chats.find_one({'_id': ObjectId(chat_id), 'members.': ObjectId(user['_id'])})
+    chat.last_message = await Messages.last_message(chat._id)
     return ChatSchema().serialize({
         '_id': chat._id,
         'name': chat.name,
         'user': await chat.get_user(),
         'members': await chat.list_members(),
         'created_at': chat.created_at,
-        'last_message': last_message
+        'last_message': chat.last_message
     })
 
 
