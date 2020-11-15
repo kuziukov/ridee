@@ -24,18 +24,25 @@ class ExpiredException(APIException):
 
     @property
     def message(self):
-        return 'Authentication time has expired. Please start again from the launcher.'
+        return 'Authentication time has expired. Please start again from the launcher'
 
-    code = codes.BAD_REQUEST
+    code = codes.AUTHORIZATION_EXPIRED
 
 
 class SMSCodeException(APIException):
 
     @property
     def message(self):
-        return 'SMS Verification Code is Invalid.'
+        return 'SMS Verification Code is Invalid'
 
     code = codes.BAD_REQUEST
+
+
+"""
+    Error exceptions:
+        - 419: Authentication time has expired. Please start again from the launcher
+        - 400: DataError exception
+"""
 
 
 async def OAuthCodePost(request):

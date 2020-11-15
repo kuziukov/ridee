@@ -19,7 +19,14 @@ class CountyException(APIException):
     def message(self):
         return 'The service is not available in your country.'
 
-    code = codes.BAD_REQUEST
+    code = codes.FORBIDDEN
+
+
+"""
+    Error exceptions:
+        - 403: The service is not available in your country.
+        - 400: DataError exception
+"""
 
 
 async def OAuthSmsPost(request):
