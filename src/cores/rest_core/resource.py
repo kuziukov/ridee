@@ -30,5 +30,6 @@ async def response(request, handler):
             'code': code,
             'status': codes.get_status(code),
             'result': data
-        }
+        },
+        status=code
     )
