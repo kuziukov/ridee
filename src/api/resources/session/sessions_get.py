@@ -2,7 +2,7 @@ from api.resources.session.schemas import SessionsSchema
 from api.service.decorator import login_required
 
 
-@login_required(skip_info=True)
+@login_required()
 async def SessionsGet(request):
     user = request.user
     session = request.app.session

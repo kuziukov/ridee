@@ -20,7 +20,7 @@ class ChatsException(APIException):
     code = codes.BAD_REQUEST
 
 
-@login_required(skip_info=True)
+@login_required()
 async def ChatsGet(request):
     user = request.user
     response = []

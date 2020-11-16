@@ -24,7 +24,7 @@ class MessageException(APIException):
     code = codes.BAD_REQUEST
 
 
-@login_required(skip_info=True)
+@login_required()
 async def MessagePost(request):
     user = request.user
     data = DeserializationSchema().deserialize(await request.json())

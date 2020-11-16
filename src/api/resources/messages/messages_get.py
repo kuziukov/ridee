@@ -32,7 +32,7 @@ class NoAccessException(APIException):
     code = codes.BAD_REQUEST
 
 
-@login_required(skip_info=True)
+@login_required()
 async def MessagesGet(request):
     user = request.user
     chat_id = request.match_info.get('chat_id', None)
