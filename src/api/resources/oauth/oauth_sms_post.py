@@ -1,8 +1,5 @@
-from api.resources.oauth.schemas import (
-    DeserializationNumberSchema,
-    SerializationNumberSchema
-)
 from api.service.session.authorization import OAuthSession
+from cores.marshmallow_core import ApiSchema, fields
 from cores.rest_core import (
     APIException,
     codes
@@ -22,20 +19,23 @@ class CountyException(APIException):
     code = codes.FORBIDDEN
 
 
-"""
-    Error exceptions:
-        - 403: The service is not available in your country.
-        - 400: DataError exception
-"""
+class DeserializationSchema(ApiSchema):
+    number = fields.PhoneNumber(required=True)
+
+
+class SerializationSchema(ApiSchema):
+    verify_key = fields.Str(default=None)
+    expires_in = fields.Int(default=180)
 
 
 async def OAuthSmsPost(request):
-    data = DeserializationNumberSchema().deserialize(await request.json())
-    session = OAuthSession(data['number'], app=request.app)
+    data = DeserializationSchema().deserialize(await request.json())
+    session = OAuthSession(key=data['number'],
+                           app=request.app)
     if await session.is_exists():
         result, expires_in = await session.get_data()
-        result["expires_in"] = expires_in
-        return SerializationNumberSchema().serialize(result)
+        result['expires_in'] = expires_in
+        return SerializationSchema().serialize(result)
 
     verify_key = generate_uuid1()
     code = generate_code()
@@ -45,4 +45,4 @@ async def OAuthSmsPost(request):
     }
     request.app.logger.info(f'{data["number"]} - {code}')
     await session.save()
-    return SerializationNumberSchema().serialize(session.data)
+    return SerializationSchema().serialize(session.data)
