@@ -5,7 +5,8 @@ from datetime import (
 )
 from aiohttp.web_app import Application
 from umongo import Document
-from api.service.session import UserSession
+
+from .session import UserSession
 from config import Config
 
 
@@ -39,7 +40,7 @@ class JWTToken(object):
         return payload
 
 
-def create_tokens(app: Application, user: Document) -> dict:
+async def create_tokens(app: Application, user: Document) -> dict:
     session = await UserSession(app).create_session(user)
     access_token, expires_in = JWTToken().generate_access(session)
     refresh_token, refresh_expires_in = JWTToken().generate_refresh(session)

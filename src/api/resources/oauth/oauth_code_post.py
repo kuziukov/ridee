@@ -82,6 +82,6 @@ async def OAuthCodePost(request):
         user.last_coord.long = long
         await user.commit()
 
-    response = create_tokens(app=app,
+    response = await create_tokens(app=app,
                              user=user)
     return SerializationSchema().serialize(response)
