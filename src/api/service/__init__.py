@@ -8,5 +8,5 @@ from .session.wssession import (
     WSSession,
     EventSession
 )
-from api.service.modules.EventPublisher.event_publisher import EventPublisher
+from api.service.modules.event_publisher import EventPublisher
 

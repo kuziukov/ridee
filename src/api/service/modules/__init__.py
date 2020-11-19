@@ -1,1 +1,1 @@
-from .Methods.chat_methods import ChatMethods
+from api.service.modules.chat_methods import ChatMethods

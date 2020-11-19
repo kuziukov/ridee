@@ -11,8 +11,3 @@ class SessionsSchema(ApiSchema):
 class SessionSchema(ApiSchema):
 
     _id = fields.Str(default=None)
-
-
-class DeserializationRefreshSchema(ApiSchema):
-
-    refresh_token = fields.Str(required=True)

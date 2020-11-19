@@ -1,6 +1,6 @@
 import json
 from api.resources.messages.schemas import MessageSchema
-from .json_encoder import JSONEncoder
+from utils.json_encoder import JSONEncoder
 
 
 class EventMethods:

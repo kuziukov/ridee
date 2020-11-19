@@ -1,11 +1,11 @@
 import jwt
 from api.resources.oauth.oauth_code_post import SerializationSchema
-from api.resources.session.schemas import DeserializationRefreshSchema
 from api.service import Session
 from api.service.session import (
     JWTToken,
     create_tokens
 )
+from cores.marshmallow_core import ApiSchema, fields
 from cores.rest_core import (
     APIException,
     codes
@@ -22,9 +22,14 @@ class RefreshTokenException(APIException):
     code = codes.REFRESH_TOKEN_EXPIRED
 
 
+class DeserializationSchema(ApiSchema):
+
+    refresh_token = fields.Str(required=True)
+
+
 async def SessionPost(request):
     app = request.app
-    data = DeserializationRefreshSchema().deserialize(await request.json())
+    data = DeserializationSchema().deserialize(await request.json())
     try:
         payload = JWTToken().parse(data['refresh_token'])
     except (jwt.DecodeError, jwt.ExpiredSignatureError):
