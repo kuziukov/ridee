@@ -1,4 +1,4 @@
-from .session.authorization import (
+from .session.oauth_session import (
     OAuthSession
 )
 from .session.session import (

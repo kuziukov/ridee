@@ -1,6 +1,6 @@
 from api.resources.stream.schemas import StreamSchema
 from api.service import EventSession
-from api.service.decorator import login_required
+from api.service.decorators import login_required
 
 
 @login_required()

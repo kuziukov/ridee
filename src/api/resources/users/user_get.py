@@ -1,5 +1,5 @@
 from api.resources.users.schemas import PrivateUserSchema
-from api.service.decorator import login_required
+from api.service.decorators import login_required
 
 
 @login_required()

@@ -2,7 +2,7 @@ from bson import ObjectId
 from api.resources.messages.schemas import (
     MessagesSchema
 )
-from api.service.decorator import login_required
+from api.service.decorators import login_required
 from cores.marshmallow_core import ApiSchema, fields
 from cores.rest_core import (
     APIException,

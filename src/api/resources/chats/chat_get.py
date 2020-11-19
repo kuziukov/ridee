@@ -1,6 +1,6 @@
 from bson import ObjectId
 from api.resources.chats.schemas import ChatSchema
-from api.service.decorator import login_required
+from api.service.decorators import login_required
 from cores.rest_core import (
     APIException,
     codes,

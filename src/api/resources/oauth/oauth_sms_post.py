@@ -1,4 +1,4 @@
-from api.service.session.authorization import OAuthSession
+from api.service.session.oauth_session import OAuthSession
 from cores.marshmallow_core import (
     ApiSchema,
     fields

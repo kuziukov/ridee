@@ -1,5 +1,5 @@
 from bson import ObjectId
-from api.service.decorator import login_required
+from api.service.decorators import login_required
 from api.resources.chats.schemas import ChatsSchema
 from cores.marshmallow_core import (
     ApiSchema,
