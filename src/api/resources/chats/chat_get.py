@@ -5,14 +5,17 @@ from cores.rest_core import (
     APIException,
     codes,
 )
-from models import Chats, Messages
+from models import (
+    Chats,
+    Messages
+)
 
 
 class ChatException(APIException):
 
     @property
     def message(self):
-        return 'The chat does not exist.'
+        return 'Invalid chat id.'
 
     code = codes.BAD_REQUEST
 
