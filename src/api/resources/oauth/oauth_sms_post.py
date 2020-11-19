@@ -1,5 +1,8 @@
 from api.service.session.authorization import OAuthSession
-from cores.marshmallow_core import ApiSchema, fields
+from cores.marshmallow_core import (
+    ApiSchema,
+    fields
+)
 from cores.rest_core import (
     APIException,
     codes
