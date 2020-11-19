@@ -10,11 +10,6 @@ from cores.marshmallow_core import (
 from api.resources.users.schemas import UserSchema
 
 
-class DeserializationSchema(ApiSchema):
-    name = fields.Str()
-    surname = fields.Str()
-
-
 class ProfileException(APIException):
 
     @property
@@ -22,6 +17,11 @@ class ProfileException(APIException):
         return 'Username or surname is wrong. Please check the data.'
 
     code = codes.BAD_REQUEST
+
+
+class DeserializationSchema(ApiSchema):
+    name = fields.Str()
+    surname = fields.Str()
 
 
 @login_required(skip_info=True)
@@ -38,5 +38,4 @@ async def UserPost(request):
         await user.commit()
     except Exception as e:
         request.app.logger.error(e)
-        raise ProfileException()
     return UserSchema().serialize(user)
