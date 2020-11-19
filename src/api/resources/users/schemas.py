@@ -17,7 +17,7 @@ class CoodrinationSchema(ApiSchema):
     long = fields.Float(default=0)
 
 
-class PersonalUserSchema(ApiSchema):
+class PrivateUserSchema(ApiSchema):
 
     _id = fields.ObjectID(default=None)
     name = fields.Str()
