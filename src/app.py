@@ -17,15 +17,15 @@ from web_sockets import (
 async def create_app(config=Config):
     app = web.Application()
     app.config = config
-    app['sockets'] = {}
-    app['tasks'] = {}
     app.middlewares.append(response)
     init_cors(app)
     await init_redis(app)
     await init_mongo(app)
     init_routes_app_v1(app)
-    init_websocket_routes(app)
     init_timber(app)
+    app['sockets'] = {}
+    app['tasks'] = {}
+    init_websocket_routes(app)
     return app
 
 
