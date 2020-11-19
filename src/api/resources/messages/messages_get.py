@@ -1,6 +1,6 @@
 from bson import ObjectId
 from api.resources.messages.schemas import (
-    ListMessageSchema,
+    MessagesSchema,
     DeserializationMessageSchema
 )
 from api.service.decorator import login_required
@@ -14,7 +14,7 @@ from models import (
 )
 
 
-class ParametersException(APIException):
+class ArgumentException(APIException):
 
     @property
     def message(self):
@@ -27,9 +27,9 @@ class NoAccessException(APIException):
 
     @property
     def message(self):
-        return 'You have no access to the chat'
+        return 'You have no access to the chat.'
 
-    code = codes.BAD_REQUEST
+    code = codes.FORBIDDEN
 
 
 @login_required()
@@ -44,8 +44,8 @@ async def MessagesGet(request):
     query_kwargs = {'chat': ObjectId(chat_id)}
     if 'start_message_id' in data:
         try:
-            start_message = await Messages.find_one(
-                {'_id': ObjectId(data['start_message_id']), 'chat': ObjectId(chat_id)})
+            start_message = await Messages.find_one({'_id': ObjectId(data['start_message_id']),
+                                                     'chat': ObjectId(chat_id)})
         except Exception as e:
             raise NoAccessException()
         if start_message:
@@ -54,9 +54,9 @@ async def MessagesGet(request):
     try:
         messages = await Messages.range_messages(query_kwargs, data['count'], data['offset'])
     except Exception as e:
-        raise ParametersException()
+        raise ArgumentException()
 
-    return ListMessageSchema().serialize({
-        'messages': messages,
-        'count': len(messages)
+    return MessagesSchema().serialize({
+        'items': messages,
+        'totals': len(messages)
     })

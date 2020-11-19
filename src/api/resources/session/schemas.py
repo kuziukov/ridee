@@ -4,8 +4,8 @@ from cores.marshmallow_core.schema import ApiSchema
 
 class SessionsSchema(ApiSchema):
 
-    sessions = fields.List(fields.Str(), default=None)
-    count = fields.Int(default=None)
+    items = fields.List(fields.Str(), default=None)
+    totals = fields.Int(default=None)
 
 
 class SessionSchema(ApiSchema):

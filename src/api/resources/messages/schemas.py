@@ -34,7 +34,7 @@ class MinimalMessageSchema(ApiSchema):
     created_at = fields.Timestamp()
 
 
-class ListMessageSchema(ApiSchema):
+class MessagesSchema(ApiSchema):
 
-    messages = fields.List(fields.Nested(MinimalMessageSchema))
-    count = fields.Int()
+    items = fields.List(fields.Nested(MinimalMessageSchema))
+    totals = fields.Int()
