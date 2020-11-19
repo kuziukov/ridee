@@ -21,7 +21,7 @@ class RefreshKeyException(APIException):
     def message(self):
         return 'Refresh token expired. Please sign in again.'
 
-    code = codes.BAD_REQUEST
+    code = codes.BAD_REFRESH
 
 
 async def SessionPost(request):

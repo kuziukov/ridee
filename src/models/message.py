@@ -1,5 +1,6 @@
 from datetime import datetime
 import pymongo
+from bson import ObjectId
 from umongo import (
     Document,
     fields
@@ -25,7 +26,7 @@ class Messages(Document):
         collection_name = "messages"
 
     @staticmethod
-    async def last_message(chat_id):
+    async def last_message(chat_id: ObjectId) -> dict:
         last_message = Messages.find({'chat': chat_id}).sort([('created_at', pymongo.DESCENDING)])
         last_message = await last_message.to_list(1)
         last_message = last_message[0] if last_message else None
@@ -38,7 +39,7 @@ class Messages(Document):
         } if last_message else None
 
     @staticmethod
-    async def range_messages(query, count=20, skip=0):
+    async def range_messages(query, count=20, skip=0) -> list:
         response = []
         messages = Messages.find(query).sort([('created_at', pymongo.DESCENDING)]).skip(skip)
         messages = await messages.to_list(count)

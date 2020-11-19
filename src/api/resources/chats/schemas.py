@@ -27,8 +27,3 @@ class ChatsSchema(ApiSchema):
     created_at = fields.Timestamp()
     last_message = fields.Nested(MessageSchema, default=None)
 
-
-class SerializationChatsSchema(ApiSchema):
-
-    chats = fields.List(fields.Nested(ChatsSchema))
-    count = fields.Int()

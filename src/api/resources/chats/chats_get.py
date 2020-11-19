@@ -1,6 +1,10 @@
 from bson import ObjectId
 from api.service.decorator import login_required
-from api.resources.chats.schemas import SerializationChatsSchema
+from api.resources.chats.schemas import ChatsSchema
+from cores.marshmallow_core import (
+    ApiSchema,
+    fields
+)
 from cores.rest_core import (
     APIException,
     codes,
@@ -20,6 +24,12 @@ class ChatsException(APIException):
     code = codes.BAD_REQUEST
 
 
+class SerializationSchema(ApiSchema):
+
+    chats = fields.List(fields.Nested(ChatsSchema))
+    count = fields.Int()
+
+
 @login_required()
 async def ChatsGet(request):
     user = request.user
@@ -28,7 +38,7 @@ async def ChatsGet(request):
     async for chat in chats:
         chat.last_message = await Messages.last_message(chat._id)
         response.append(chat)
-    return SerializationChatsSchema().serialize({
+    return SerializationSchema().serialize({
         'chats': response,
         'count': len(response)
     })
