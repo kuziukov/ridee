@@ -1,5 +1,3 @@
-import datetime
-
 from aiohttp import web
 import asyncio
 from config import Config
