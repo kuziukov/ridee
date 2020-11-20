@@ -21,7 +21,7 @@ class Messages(Document):
     chat = fields.ReferenceField(Chats, required=True)
     user = fields.ReferenceField(Users, required=True)
     is_deleted = fields.BooleanField(default=False)
-    created_at = fields.DateTimeField(missing=datetime.datetime.utcnow)
+    created_at = fields.DateTimeField(missing=datetime.datetime.utcnow())
 
     class Meta:
         collection_name = "messages"
