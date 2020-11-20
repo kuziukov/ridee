@@ -13,7 +13,7 @@ class Chats(Document):
     name = fields.StringField(required=True)
     members = fields.ListField(fields.ReferenceField(Users), default=[])
     user = fields.ReferenceField(Users, required=True)
-    created_at = fields.DateTimeField(default=datetime.utcnow())
+    created_at = fields.DateTimeField(default=datetime.utcnow)
 
     class Meta:
         collection_name = "chats"
