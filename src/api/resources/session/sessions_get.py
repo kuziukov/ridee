@@ -1,5 +1,5 @@
 from api.resources.session.schemas import SessionsSchema
-from api.service.decorator import login_required
+from api.service.decorators import login_required
 
 
 @login_required()
@@ -8,9 +8,8 @@ async def SessionsGet(request):
     session = request.app.session
 
     keys = await session.keys(f"{user['_id']}:*")
-    response = {
-        'sessions': [key.split(b":")[1] for key in keys],
-        'count': len(keys)
-    }
-    return SessionsSchema().serialize(response)
+    return SessionsSchema().serialize({
+        'items': [key.split(b":")[1] for key in keys],
+        'totals': len(keys)
+    })
 

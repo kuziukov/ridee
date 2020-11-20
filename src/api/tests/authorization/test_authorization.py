@@ -1,6 +1,6 @@
 import json
 from aiohttp.test_utils import unittest_run_loop
-from api.service.session.authorization import OAuthSession
+from api.service.session.oauth_session import OAuthSession
 from api.tests import AppTestCase
 from utils import (
     generate_uuid1,

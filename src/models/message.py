@@ -1,4 +1,5 @@
-from datetime import datetime
+import datetime
+
 import pymongo
 from bson import ObjectId
 from umongo import (
@@ -20,7 +21,7 @@ class Messages(Document):
     chat = fields.ReferenceField(Chats, required=True)
     user = fields.ReferenceField(Users, required=True)
     is_deleted = fields.BooleanField(default=False)
-    created_at = fields.DateTimeField(default=datetime.utcnow())
+    created_at = fields.DateTimeField(default=datetime.datetime.utcnow())
 
     class Meta:
         collection_name = "messages"

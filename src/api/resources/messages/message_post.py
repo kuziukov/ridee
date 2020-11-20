@@ -1,10 +1,10 @@
 from bson import ObjectId
 from api.resources.messages.schemas import (
-    DeserializationSchema,
     MessageSchema
 )
 from api.service import EventPublisher
-from api.service.decorator import login_required
+from api.service.decorators import login_required
+from cores.marshmallow_core import ApiSchema, fields
 from cores.rest_core import (
     APIException,
     codes
@@ -22,6 +22,13 @@ class MessageException(APIException):
         return 'The message is not sent. Please check data and try again.'
 
     code = codes.BAD_REQUEST
+
+
+class DeserializationSchema(ApiSchema):
+
+    chat_id = fields.ObjectID(required=True)
+    message = fields.Str(required=True)
+    random_id = fields.Str(required=True)
 
 
 @login_required()

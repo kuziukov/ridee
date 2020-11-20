@@ -1,18 +1,21 @@
 from bson import ObjectId
 from api.resources.chats.schemas import ChatSchema
-from api.service.decorator import login_required
+from api.service.decorators import login_required
 from cores.rest_core import (
     APIException,
     codes,
 )
-from models import Chats, Messages
+from models import (
+    Chats,
+    Messages
+)
 
 
 class ChatException(APIException):
 
     @property
     def message(self):
-        return 'The chat does not exist.'
+        return 'Invalid chat id.'
 
     code = codes.BAD_REQUEST
 

@@ -1,4 +1,4 @@
-from .session.authorization import (
+from .session.oauth_session import (
     OAuthSession
 )
 from .session.session import (
@@ -8,5 +8,5 @@ from .session.wssession import (
     WSSession,
     EventSession
 )
-from api.service.modules.EventPublisher.event_publisher import EventPublisher
+from api.service.modules.event_publisher import EventPublisher
 
