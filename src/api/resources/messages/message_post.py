@@ -39,7 +39,7 @@ async def MessagePost(request):
     message = Messages()
     message.user = user
     message.chat = ObjectId(data['chat_id'])
-    message.message = data['message']
+    message.message = str(data['message']).strip()
     message.random_id = data['random_id']
     try:
         await message.commit()
