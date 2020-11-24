@@ -8,7 +8,7 @@ async def StreamGet(request):
     user = request.user
     session = await EventSession(request.app).create_session(user)
     result = {
-        'endpoint': 'https://api.ftraveler.com/',
+        'endpoint': 'wss://api.ftraveler.com/',
         'key': session.key,
     }
     return StreamSchema().serialize(result)
