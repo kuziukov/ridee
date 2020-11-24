@@ -28,6 +28,7 @@ async def EventsHandler(request):
     try:
         await asyncio.gather(WSocketEchoHandler(ws).listen())
     finally:
+        request.app.logger.info(f'{app["sockets"][topic]}: disconnected')
         app['sockets'][topic].remove(ws)
         if len(app['sockets'][topic]) == 0:
             app['sockets'].pop(topic)
