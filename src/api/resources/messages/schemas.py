@@ -17,6 +17,7 @@ class MinimalMessageSchema(ApiSchema):
     _id = fields.ObjectID(default=None)
     user = fields.Nested(UserSchema, default=None)
     message = fields.Str(default=None)
+    read = fields.List(fields.Nested(UserSchema), default=[])
     created_at = fields.Timestamp()
 
 

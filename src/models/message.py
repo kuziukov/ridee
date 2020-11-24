@@ -20,6 +20,7 @@ class Messages(Document):
     message = fields.StringField(required=True)
     chat = fields.ReferenceField(Chats, required=True)
     user = fields.ReferenceField(Users, required=True)
+    read = fields.ListField(fields.ReferenceField(Users), default=[])
     is_deleted = fields.BooleanField(default=False)
     created_at = fields.DateTimeField(default=datetime.datetime.utcnow)
 
