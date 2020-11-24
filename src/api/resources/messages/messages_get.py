@@ -45,7 +45,7 @@ async def MessagesGet(request):
     chat_id = request.match_info.get('chat_id', None)
     data = DeserializationSchema().deserialize(request.rel_url.query)
 
-    if not await Chats.is_user_in_chat(ObjectId(chat_id), user._id):
+    if not await Chats.is_user_in_chat(chat_id, user._id):
         raise NoAccessException()
 
     query_kwargs = {'chat': ObjectId(chat_id)}

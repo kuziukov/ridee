@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from bson import ObjectId
 from umongo import (
     Document,
     fields
@@ -25,6 +27,6 @@ class Chats(Document):
         return await self.user.fetch()
 
     @staticmethod
-    async def is_user_in_chat(chat_id, user_id) -> bool:
-        chat = await Chats.find_one({'_id': chat_id, 'members.': user_id})
+    async def is_user_in_chat(chat_id: str, user_id: str) -> bool:
+        chat = await Chats.find_one({'_id': ObjectId(chat_id), 'members.': ObjectId(user_id)})
         return True if chat else False

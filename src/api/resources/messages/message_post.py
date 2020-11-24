@@ -38,7 +38,7 @@ async def MessagePost(request):
     user = request.user
     data = DeserializationSchema().deserialize(await request.json())
 
-    if not await Chats.is_user_in_chat(ObjectId(data['chat_id']), user._id):
+    if not await Chats.is_user_in_chat(data['chat_id'], user._id):
         raise NoAccessException()
 
     message = Messages()
