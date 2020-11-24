@@ -58,6 +58,7 @@ async def MessagesGet(request):
         if start_message:
             query_kwargs['created_at'] = {'$lte': start_message.created_at}
 
+    print(query_kwargs)
     try:
         messages = await Messages.range_messages(query_kwargs, data['count'], data['offset'])
     except Exception as e:
