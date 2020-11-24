@@ -1,4 +1,6 @@
 from bson import ObjectId
+
+from api.resources.messages.messages_get import NoAccessException
 from api.resources.messages.schemas import (
     MessageSchema
 )
@@ -35,6 +37,9 @@ class DeserializationSchema(ApiSchema):
 async def MessagePost(request):
     user = request.user
     data = DeserializationSchema().deserialize(await request.json())
+
+    if not await Chats.is_user_in_chat(ObjectId(data['chat_id']), user._id):
+        raise NoAccessException()
 
     message = Messages()
     message.user = user
