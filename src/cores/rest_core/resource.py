@@ -25,11 +25,6 @@ async def response(request, handler):
         print(e)
         code = codes.INTERNAL_SERVER_ERROR
         data = {'error': 'InternalServerError', 'message': 'Internal Server Error.', }
-    request.app.logger.error({
-            'code': code,
-            'status': codes.get_status(code),
-            'result': data
-        })
     return web.json_response(
         {
             'code': code,

@@ -10,11 +10,13 @@ from web_sockets.services import (
 )
 
 
-@websocket_required
+#@websocket_required
 async def EventsHandler(request):
     app = request.app
     topic = request.topic
     events = app.events
+
+    request.app.logger.info('new connection')
 
     ws = WebSocketResponse()
     await ws.prepare(request)
