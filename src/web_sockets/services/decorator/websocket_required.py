@@ -4,6 +4,7 @@ from api.service import WSSession
 
 def websocket_required(func):
     async def wrapped(request):
+
         token = request.match_info.get('code', None)
         if not isinstance(token, str) and not token:
             request.app.logger.info(f'{token}: invalid')
@@ -19,5 +20,6 @@ def websocket_required(func):
         await session.destroy()
 
         request.topic = topic
+
         return await func(request)
     return wrapped

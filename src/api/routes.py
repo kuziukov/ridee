@@ -15,7 +15,7 @@ from .resources import (
 )
 
 
-def init_routes_app_v1(app):
+def init_routes(app):
     app.router.add_post('/v1/oauth/sms', OAuthSmsPost)
     app.router.add_post('/v1/oauth/code', OAuthCodePost)
     app.router.add_get('/v1/user', UserGet)

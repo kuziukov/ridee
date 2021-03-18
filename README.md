@@ -1,18 +1,34 @@
-# ridee
+# ALPHA project
 
+```
 docker-compose -f docker-compose.yml up -d
+```
 
 
 
-# websocket
+# WEBSOCKETS
 
-Structure of message
+```
+URL: wss://localhost:5000/{token}
+```
 
+## 1.1 Structure of the commands
+
+```
 {
-    type: str
-    result: dict
+    "cmd": "type",
+    "args": {
+        "user_id": "123456789"
+    }
 }
+```
 
+# Types of commands
 
-types:
-    1. message: Message
+* NEW_MASSAGE
+
+```
+{
+    "message_id": str("123456789")
+}
+```

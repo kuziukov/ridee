@@ -8,17 +8,31 @@ from web_sockets.services import (
     EventEchoHandler,
     WSocketEchoHandler
 )
+from web_sockets.services.classes import (
+    RedisSubscriber
+)
 
 
 @websocket_required
 async def EventsHandler(request):
-    app = request.app
-    topic = request.topic
-    events = app.events
+    listenManager = request.app.websocket
 
     ws = WebSocketResponse()
     await ws.prepare(request)
 
+    manager = listenManager.get(request.topic)
+    client = RedisSubscriber(ws)
+    manager.subscribe(client)
+
+    try:
+        await asyncio.gather(WSocketEchoHandler(ws).listen())
+    finally:
+        request.app.logger.info(f' User: disconnected')
+
+    manager.unsibscribe(client)
+
+
+    """
     if topic not in app['sockets']:
         app['sockets'][topic] = []
         task = asyncio.create_task(EventEchoHandler(events, app['sockets'][topic]).broadcast(topic))
@@ -34,4 +48,6 @@ async def EventsHandler(request):
             app['sockets'].pop(topic)
             task = app['tasks'].pop(topic)
             task.cancel()
+            
+    """
     return ws

@@ -6,11 +6,13 @@ from extentions import (
     init_cors,
     init_redis,
     init_mongo,
-    init_timber,
 )
-from api import init_routes_app_v1
+from api import init_routes
 from web_sockets import (
-    init_websocket_routes
+    init_ws_routes
+)
+from web_sockets.services.managers import (
+    SubscribeManager
 )
 
 
@@ -19,13 +21,17 @@ async def create_app(config=Config):
     app.config = config
     app.middlewares.append(response)
     init_cors(app)
+
     await init_redis(app)
     await init_mongo(app)
-    init_routes_app_v1(app)
-    init_timber(app)
+
+    # init_timber(app)
+    app.websocket = SubscribeManager(app.events)
     app['sockets'] = {}
     app['tasks'] = {}
-    init_websocket_routes(app)
+
+    init_routes(app)
+    init_ws_routes(app)
     return app
 
 

@@ -1,1 +1,1 @@
-from .routes import init_websocket_routes
+from .routes import init_ws_routes

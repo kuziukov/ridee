@@ -3,5 +3,5 @@ from web_sockets.resources import (
 )
 
 
-def init_websocket_routes(app):
+def init_ws_routes(app):
     app.router.add_route('GET', '/{code}', EventsHandler)
